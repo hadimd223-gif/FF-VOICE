@@ -399,21 +399,6 @@
             transform: translateX(20px);
             background-color: var(--neon-green);
         }
-
-        .mic-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff003c 0%, #990024 100%);
-            padding: 10px;
-            border: 1px solid var(--neon-red);
-            border-radius: 6px;
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 11px;
-            cursor: pointer;
-            box-shadow: 0 0 12px var(--red-glow);
-            margin-bottom: 12px;
-        }
     </style>
 </head>
 <body>
@@ -431,7 +416,7 @@
 
     <div class="terminal-header">
         <h1>M H X VOICE WEB</h1>
-        <div class="system-status">ACTIVE</div>
+        <div class="system-status" id="systemStatusBadge">STANDBY</div>
     </div>
 
     <div class="control-panel">
@@ -455,9 +440,11 @@
         </div>
     </div>
 
-    <button class="mic-btn" onclick="enableInGameMicBridge()">
-        ⚡ ACTIVATE MIC INJECTION [ROOT]
-    </button>
+    <!-- নতুন স্ট্রিমিং কন্ট্রোল বাটন দুটি (STREAM ON / STREAM OFF) -->
+    <div class="btn-row" style="margin-bottom: 12px;">
+        <button class="btn-cyber" style="flex:1;" onclick="enableStream()">🟢 STREAM ON</button>
+        <button class="btn-cyber btn-red" style="flex:1;" onclick="disableStream()">🔴 STREAM OFF</button>
+    </div>
 
     <div class="import-section-box">
         <span class="label-title">> AUDIO VAULT (SQUARE GRID)</span>
@@ -510,7 +497,9 @@
     let currentRoom = "M-H-X-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
+    let micStreamSource = null;
     let activeAudio = null;
+    let isStreamingActive = false;
 
     window.onload = function() {
         loadAudioGrid();
@@ -520,19 +509,49 @@
     async function requestMicPermission() {
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
-            const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            const sourceNode = audioCtx.createMediaStreamSource(micStream);
-            const dest = audioCtx.createMediaStreamDestination();
-            sourceNode.connect(dest);
-            micDestination = dest;
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            micStreamSource = audioCtx.createMediaStreamSource(stream);
+            micDestination = audioCtx.createMediaStreamDestination();
+            
+            // ডিফল্টভাবে কানেক্ট করে রাখা
+            micStreamSource.connect(micDestination);
+            isStreamingActive = true;
+            
+            document.getElementById('systemStatusBadge').innerText = "STREAMING ACTIVE";
+            document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
             document.getElementById('permissionModal').style.display = 'none';
         } catch (err) {
             alert("Microphone permission is mandatory to run this system.");
         }
     }
 
-    async function enableInGameMicBridge() {
-        requestMicPermission();
+    // STREAM ON বাটন (টিমমেটদের কাছে অডিও পৌঁছানো চালু হবে)
+    function enableStream() {
+        if (!micDestination && !micStreamSource) {
+            requestMicPermission();
+            return;
+        }
+        if (micStreamSource && micDestination) {
+            try { micStreamSource.disconnect(); } catch(e) {}
+            micStreamSource.connect(micDestination);
+        }
+        isStreamingActive = true;
+        document.getElementById('systemStatusBadge').innerText = "STREAMING ACTIVE";
+        document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
+        alert("Audio streaming to squad enabled.");
+    }
+
+    // STREAM ON বাটন (টিমমেটদের কাছে অডিও পৌঁছানো বন্ধ হবে)
+    function disableStream() {
+        if (micStreamSource && micDestination) {
+            try {
+                micStreamSource.disconnect(micDestination);
+            } catch(e) {}
+        }
+        isStreamingActive = false;
+        document.getElementById('systemStatusBadge').innerText = "STREAM MUTED";
+        document.getElementById('systemStatusBadge').style.color = "var(--neon-red)";
+        alert("Audio streaming to squad disabled.");
     }
 
     async function toggleFloatingMode() {
@@ -652,7 +671,8 @@
             audio.play();
         }
 
-        if (micDestination) {
+        // যদি স্ট্রিমিং অন থাকে, তবেই মাইকের মাধ্যমে টিমমেটরা শুনতে পাবে
+        if (isStreamingActive && micDestination) {
             try {
                 const sourceNode = audioCtx.createMediaElementSource(audio);
                 sourceNode.connect(micDestination);
@@ -669,7 +689,6 @@
         };
     }
 
-    // হিউম্যান-লাইক এক্সপ্রেশনসহ টেক্সট-টু-স্পিচ কনভার্শন
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
         const lang = document.getElementById('langSelect').value;
@@ -678,15 +697,8 @@
         const isStealthOn = document.getElementById('stealthMode').checked;
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
-        utterance.rate = 0.95; // মানুষের মতো স্বাভাবিক ও সাবলীল গতি
-        utterance.pitch = 1.05; // সামান্য ন্যাচারাল টোন
-
-        // রিয়েল হিউম্যান ভয়েস সিলেক্ট করার চেষ্টা
-        const voices = window.speechSynthesis.getVoices();
-        const selectedVoice = voices.find(v => v.lang.includes(lang.substring(0, 2)));
-        if (selectedVoice) {
-            utterance.voice = selectedVoice;
-        }
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
 
         if (!isStealthOn) {
             window.speechSynthesis.speak(utterance);
