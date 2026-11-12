@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER-X // CUSTOM AUDIO INJECTOR</title>
+    <title>M H X VOICE WEB // SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-dark: #030712;
-            --card-bg: rgba(5, 15, 25, 0.92);
+            --card-bg: rgba(5, 15, 25, 0.95);
             --neon-green: #00ff66;
             --neon-red: #ff003c;
             --green-glow: rgba(0, 255, 102, 0.3);
@@ -23,6 +23,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Share Tech Mono', monospace;
+            user-select: none;
         }
 
         body {
@@ -44,7 +45,7 @@
             max-width: 460px;
             background: var(--card-bg);
             border: 2px solid var(--neon-green);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 20px;
             box-shadow: 0 0 25px var(--green-glow), inset 0 0 15px rgba(0, 255, 102, 0.05);
             position: relative;
@@ -66,7 +67,7 @@
             font-weight: 900;
             color: var(--neon-green);
             text-shadow: 0 0 10px var(--neon-green);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         .system-status {
@@ -157,58 +158,31 @@
             gap: 8px;
         }
 
-        /* প্রিসেট ও ইম্পোর্ট ভয়েস লিস্ট */
-        .saved-presets-container {
-            margin-top: 8px;
-            max-height: 90px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        /* চতুর্ভুজাকার ইম্পোর্ট ভয়েস বক্স (সিরিয়াল লিস্ট সহ) */
+        .import-section-box {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--neon-green);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 10px rgba(0,255,102,0.1);
         }
 
-        .preset-chip {
-            background: rgba(0, 255, 102, 0.08);
-            border: 1px dashed var(--neon-green);
-            color: var(--neon-green);
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
-        }
-
-        .preset-chip:hover {
-            background: rgba(0, 255, 102, 0.2);
-        }
-
-        .preset-chip.active-playing {
-            border-color: var(--neon-red);
-            color: var(--neon-red);
-            background: rgba(255, 0, 60, 0.15);
-            box-shadow: 0 0 12px var(--neon-red);
-        }
-
-        /* ইম্পোর্ট ভয়েস আপলোড বক্স */
-        .import-box {
-            background: #000;
+        .import-drop-zone {
             border: 2px dashed var(--neon-green);
             border-radius: 8px;
             padding: 12px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 12px;
             transition: 0.3s;
+            margin-bottom: 10px;
         }
 
-        .import-box:hover {
-            background: rgba(0, 255, 102, 0.08);
+        .import-drop-zone:hover {
+            background: rgba(0, 255, 102, 0.1);
         }
 
-        .import-box label {
+        .import-drop-zone label {
             cursor: pointer;
             color: var(--neon-green);
             font-size: 11px;
@@ -216,6 +190,76 @@
             text-transform: uppercase;
             font-weight: bold;
             letter-spacing: 1px;
+        }
+
+        .audio-list-container {
+            max-height: 130px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .audio-item-box {
+            background: #050d14;
+            border: 1px solid var(--neon-green);
+            border-radius: 6px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            cursor: grab;
+            transition: 0.2s;
+        }
+
+        .audio-item-box:active {
+            cursor: grabbing;
+        }
+
+        .audio-item-box.active-playing {
+            border-color: var(--neon-red);
+            background: rgba(255, 0, 60, 0.2);
+            color: var(--neon-red);
+            box-shadow: 0 0 12px var(--neon-red);
+        }
+
+        .audio-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .audio-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+        }
+
+        /* ড্র্যাগ করে নিচে ফেলার ডিলিট জোন */
+        .trash-drop-zone {
+            display: none;
+            background: rgba(255, 0, 60, 0.2);
+            border: 2px dashed var(--neon-red);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            color: var(--neon-red);
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: pulse-trash 1s infinite alternate;
+        }
+
+        @keyframes pulse-trash {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
         /* টগল সুইচ */
@@ -299,7 +343,7 @@
 
 <div class="hacker-container">
     <div class="terminal-header">
-        <h1>CYBER-X // AUDIO INJECTOR</h1>
+        <h1>M H X VOICE WEB</h1>
         <div class="system-status">ACTIVE</div>
     </div>
 
@@ -307,7 +351,7 @@
     <div class="control-panel">
         <span class="label-title">> TARGET_ROOM_ID</span>
         <div class="input-row">
-            <input type="text" id="roomCode" value="HACK-FF-01">
+            <input type="text" id="roomCode" value="M-H-X-01">
             <button class="btn-cyber" onclick="changeRoom()">CONNECT</button>
         </div>
     </div>
@@ -331,34 +375,43 @@
         ⚡ ACTIVATE MIC INJECTION [ROOT]
     </button>
 
-    <!-- নতুন অপশন: ইম্পোর্ট ভয়েস (মিউজিক ফাইল বা ভয়েস আপলোড) -->
-    <div class="import-box">
-        <label for="audioFileInput">
-            📁 [+ ইম্পোর্ট ভয়েস / মিউজিক ফাইল যোগ করুন]
-        </label>
-        <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
+    <!-- চতুর্ভুজাকার ইম্পোর্ট ভয়েস বক্স এবং সিরিয়াল লিস্ট -->
+    <div class="import-section-box">
+        <span class="label-title">> IMPORTED AUDIO MODULE</span>
+        
+        <!-- ডিলিট ড্রপ জোন (লং প্রেস করে নিচে টানলে শো করবে) -->
+        <div id="trashZone" class="trash-drop-zone">
+            🗑️ ডিলিট করতে এখানে এনে ছাড়ুন
+        </div>
+
+        <div class="import-drop-zone">
+            <label for="audioFileInput">
+                📁 [+ নতুন ভয়েস/মিউজিক ইম্পোর্ট করুন]
+            </label>
+            <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
+        </div>
+
+        <div class="label-title" style="font-size: 10px; margin-top: 6px;">> AUDIO LIST (১, ২, ৩ সিরিয়াল):</div>
+        <div class="audio-list-container" id="audioListContainer">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে সিরিয়াল অনুযায়ী বক্সগুলো এখানে আসবে -->
+        </div>
     </div>
 
-    <!-- টেক্সট-টু-স্পিচ এবং সেভ/সেন্ড প্যানেল -->
+    <!-- টেক্সট-টু-স্পিচ প্যানেল -->
     <div class="tts-box">
-        <span class="label-title">> VOICE SYNTHESIS & PRESETS</span>
-        
+        <span class="label-title">> NATIVE TEXT-TO-SPEECH</span>
         <select id="langSelect" style="margin-bottom: 8px;">
             <option value="bn-BD">বাংলা (Bangla)</option>
             <option value="en-US">English (US)</option>
         </select>
-
         <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন..."></textarea>
         
-        <div class="btn-row" style="margin-bottom: 8px;">
+        <div class="btn-row">
             <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">💾 সেভ করুন</button>
             <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">🚀 সেন্ড করুন</button>
         </div>
-
-        <span class="label-title" style="font-size: 10px; margin-top: 8px;">> SAVED PRESETS & IMPORTED AUDIO:</span>
-        <div class="saved-presets-container" id="presetsList">
-            <!-- সেভ করা লেখা ও ইম্পোর্ট করা মিউজিক ফাইল এখানে শো করবে -->
-        </div>
+        
+        <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:80px; overflow-y:auto;"></div>
     </div>
 </div>
 
@@ -382,12 +435,14 @@
     const db = firebase.database();
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let currentRoom = "HACK-FF-01";
+    let currentRoom = "M-H-X-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
-    let activeAudioElement = null; // ব্যাকগ্রাউন্ড অডিও ট্র্যাক কন্ট্রোল করার জন্য
+    let activeAudio = null;
+    let activeItemIndex = null;
 
     window.onload = function() {
+        loadAudioList();
         loadPresets();
     };
 
@@ -415,34 +470,126 @@
         alert("Target Room Switched: " + currentRoom);
     }
 
-    // ব্যাকগ্রাউন্ডে মিউজিক বা ভয়েস ফাইল প্লে এবং টিমমেটদের শোনানোর ফাংশন
-    function playAudioFile(url, fileName, chipElement) {
+    // অডিও ফাইল ইম্পোর্ট এবং সিরিয়াল লিস্ট তৈরি
+    function importAudioFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
+            audioList.push({
+                name: file.name,
+                data: e.target.result
+            });
+            localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
+            loadAudioList();
+            alert("ভয়েস সফলভাবে ইম্পোর্ট করা হয়েছে!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // সিরিয়াল লিস্ট রেন্ডার করা (টগল প্লে/স্টপ এবং এডিট/রিনেম ফিচার সহ)
+    function loadAudioList() {
+        const container = document.getElementById('audioListContainer');
+        container.innerHTML = '';
+        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
+
+        if (audioList.length === 0) {
+            container.innerHTML = '<span style="font-size:10px; color:#64748b; text-align:center; display:block;">কোনো ভয়েস ইম্পোর্ট করা নেই।</span>';
+            return;
+        }
+
+        audioList.forEach((item, index) => {
+            const box = document.createElement('div');
+            box.className = 'audio-item-box';
+            box.draggable = true;
+
+            box.innerHTML = `
+                <div class="audio-info">
+                    <span style="color:var(--neon-green); font-weight:bold;">[${index + 1}]</span>
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">${item.name}</span>
+                </div>
+                <div class="audio-actions">
+                    <span class="action-icon" title="Rename" onclick="renameAudio(event, ${index})">✏️</span>
+                </div>
+            `;
+
+            // টগল প্লে/স্টপ সিস্টেম (একবার চাপলে বাজবে, আবার চাপলে বন্ধ হবে)
+            box.onclick = (e) => {
+                if (e.target.tagName === 'SPAN' && e.target.title === 'Rename') return;
+                togglePlayAudio(item.data, box);
+            };
+
+            // লং প্রেস বা ড্র্যাগ করে ডিলিট করার হ্যান্ডলিং
+            box.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', index);
+                document.getElementById('trashZone').style.display = 'block';
+            });
+
+            box.addEventListener('dragend', () => {
+                document.getElementById('trashZone').style.display = 'none';
+            });
+
+            container.appendChild(box);
+        });
+    }
+
+    // ড্র্যাগ ওভার ট্র্যাশ জোন
+    const trashZone = document.getElementById('trashZone');
+    trashZone.addEventListener('dragover', (e) => { e.preventDefault(); });
+    trashZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const index = e.dataTransfer.getData('text/plain');
+        if (index !== "") {
+            deleteAudioItem(parseInt(index));
+        }
+        trashZone.style.display = 'none';
+    });
+
+    function deleteAudioItem(index) {
+        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
+        audioList.splice(index, 1);
+        localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
+        loadAudioList();
+        alert("ভয়েস সফলভাবে ডিলিট করা হয়েছে!");
+    }
+
+    // রিনেম করার ফাংশন
+    function renameAudio(event, index) {
+        event.stopPropagation();
+        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
+        let newName = prompt("নতুন নাম লিখুন:", audioList[index].name);
+        if (newName) {
+            audioList[index].name = newName;
+            localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
+            loadAudioList();
+        }
+    }
+
+    // টগল প্লে এবং স্টিলথ মোড হ্যান্ডেলিং
+    function togglePlayAudio(dataUrl, boxElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
-        // যদি আগে থেকেই কোনো অডিও চলতে থাকে, তবে সেটি বন্ধ করে দেবো (টগল সিস্টেম)
-        if (activeAudioElement) {
-            activeAudioElement.pause();
-            activeAudioElement = null;
-            document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active-playing'));
-            if (activeAudioElement && activeAudioElement.src === url) {
-                dbRef.set({ sound: 'AUDIO_STOP', timestamp: Date.now() });
+        if (activeAudio) {
+            activeAudio.pause();
+            activeAudio = null;
+            document.querySelectorAll('.audio-item-box').forEach(el => el.classList.remove('active-playing'));
+            if (activeAudio && activeAudio.src === dataUrl) {
                 return;
             }
         }
 
-        const audio = new Audio(url);
-        audio.loop = true; // ব্যাকগ্রাউন্ডে লুপ হয়ে চলার জন্য
-        activeAudioElement = audio;
-        if (chipElement) chipElement.classList.add('active-playing');
+        const audio = new Audio(dataUrl);
+        activeAudio = audio;
+        boxElement.classList.add('active-playing');
 
         const isStealthOn = document.getElementById('stealthMode').checked;
 
-        // যদি স্টিলথ মোড অফ থাকে, তবে নিজের ফোনে স্পিকারে বাজবে
         if (!isStealthOn) {
             audio.play();
         }
 
-        // যদি মাইক ব্রিজ অন থাকে, তবে গেমের মাইকের মাধ্যমে টিমমেটদের কাছে রাউট হবে
         if (micDestination) {
             try {
                 const sourceNode = audioCtx.createMediaElementSource(audio);
@@ -454,144 +601,62 @@
             }
         }
 
-        // ফায়ারবেসের মাধ্যমে রুমের অন্য টিমমেটদের সিগন্যাল পাঠানো
-        dbRef.set({
-            sound: 'custom_audio',
-            audioUrl: url,
-            fileName: fileName,
-            timestamp: Date.now()
-        });
-    }
-
-    // ফাইল ম্যানেজার থেকে নতুন মিউজিক বা ভয়েস ফাইল ইম্পোর্ট করা
-    function importAudioFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const audioDataUrl = e.target.result;
-            let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
-            
-            // অবজেক্ট আকারে ফাইল সেভ করা (টাইপ মিউজিক বা টেক্সট বুঝানোর জন্য)
-            const newItem = {
-                type: 'audio',
-                name: file.name,
-                data: audioDataUrl
-            };
-
-            savedPresets.push(newItem);
-            localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
-            loadPresets();
-            alert("সফলভাবে ভয়েস/মিউজিক ফাইল ইম্পোর্ট করা হয়েছে!");
+        audio.onended = () => {
+            boxElement.classList.remove('active-playing');
+            activeAudio = null;
         };
-        reader.readAsDataURL(file);
     }
 
-    // টেক্সট সেন্ড করার ফাংশন
+    // টেক্সট টু স্পিচ ও প্রিসেট সিস্টেম
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
         const lang = document.getElementById('langSelect').value;
-        if (!text) {
-            alert("অনুগ্রহ করে কিছু টেক্সট লিখুন!");
-            return;
-        }
-        executeSpeechAndSync(text, lang);
-    }
+        if (!text) return;
 
-    function executeSpeechAndSync(text, lang) {
         const isStealthOn = document.getElementById('stealthMode').checked;
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
-        utterance.rate = 1.0;
 
         if (!isStealthOn) {
             window.speechSynthesis.speak(utterance);
         }
 
-        dbRef.set({
-            sound: 'native_tts',
-            text: text,
-            lang: lang,
-            timestamp: Date.now()
-        });
+        dbRef.set({ sound: 'tts', text: text, lang: lang, timestamp: Date.now() });
     }
 
-    // টেক্সট সেভ করার ফাংশন
     function saveTextPreset() {
         const text = document.getElementById('ttsInput').value.trim();
-        if (!text) {
-            alert("সেভ করার জন্য বক্সে কিছু লিখুন!");
-            return;
-        }
-
-        let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
-        const newItem = {
-            type: 'text',
-            content: text
-        };
-
-        savedPresets.push(newItem);
-        localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
+        if (!text) return;
+        let presets = JSON.parse(localStorage.getItem('mhx_presets') || '[]');
+        presets.push(text);
+        localStorage.setItem('mhx_presets', JSON.stringify(presets));
         loadPresets();
-        alert("টেক্সট সফলভাবে সেভ করা হয়েছে!");
     }
 
-    // সেভ করা আইটেম এবং ইম্পোর্ট করা ফাইলগুলো স্ক্রিনে দেখানো
     function loadPresets() {
         const container = document.getElementById('presetsList');
         container.innerHTML = '';
-        let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
-
-        if (savedPresets.length === 0) {
-            container.innerHTML = '<span style="font-size:10px; color:#64748b;">কোনো ফাইল বা টেক্সট সেভ করা নেই।</span>';
-            return;
-        }
-
-        savedPresets.forEach((item, index) => {
+        let presets = JSON.parse(localStorage.getItem('mhx_presets') || '[]');
+        presets.forEach((item) => {
             const chip = document.createElement('div');
-            chip.className = 'preset-chip';
-
-            if (item.type === 'audio') {
-                chip.innerHTML = `<span>🎵 [AUDIO] ${item.name.substring(0, 20)}...</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="deletePreset(event, ${index})">[X]</span>`;
-                chip.onclick = (e) => {
-                    if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
-                        playAudioFile(item.data, item.name, chip);
-                    }
-                };
-            } else {
-                chip.innerHTML = `<span>💬 ${item.content.substring(0, 22)}...</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="deletePreset(event, ${index})">[X]</span>`;
-                chip.onclick = (e) => {
-                    if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
-                        document.getElementById('ttsInput').value = item.content;
-                        executeSpeechAndSync(item.content, document.getElementById('langSelect').value);
-                    }
-                };
-            }
+            chip.style.cssText = "background:rgba(0,255,102,0.08); border:1px dashed var(--neon-green); color:var(--neon-green); padding:5px 8px; border-radius:4px; font-size:10px; margin-bottom:4px; cursor:pointer;";
+            chip.innerText = "> " + item;
+            chip.onclick = () => {
+                document.getElementById('ttsInput').value = item;
+                speakAndSendText();
+            };
             container.appendChild(chip);
         });
-    }
-
-    function deletePreset(event, index) {
-        event.stopPropagation();
-        let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
-        savedPresets.splice(index, 1);
-        localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
-        loadPresets();
     }
 
     function listenToFirebase() {
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && Date.now() - data.timestamp < 3000) {
-                if (data.sound === 'native_tts' && data.text) {
+                if (data.sound === 'tts' && data.text) {
                     const remoteUtterance = new SpeechSynthesisUtterance(data.text);
                     remoteUtterance.lang = data.lang;
                     window.speechSynthesis.speak(remoteUtterance);
-                } else if (data.sound === 'custom_audio' && data.audioUrl) {
-                    const remoteAudio = new Audio(data.audioUrl);
-                    remoteAudio.play().catch(e => console.log(e));
                 }
             }
         });
