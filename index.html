@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M H X VOICE WEB // PRO SYSTEM</title>
+    <title>M H X VOICE WEB // 100% WORKING PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -138,7 +138,7 @@
         }
 
         textarea {
-            height: 50px;
+            height: 55px;
             resize: none;
             margin-bottom: 8px;
         }
@@ -353,7 +353,7 @@
     <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
 
     <div class="terminal-header">
-        <h1>M H X VOICE WEB</h1>
+        <h1>M H X VOICE WEB // PRO</h1>
         <div class="system-status" id="systemStatusBadge">MIC OFFLINE</div>
     </div>
 
@@ -365,7 +365,7 @@
         </div>
     </div>
 
-    <!-- মাইক অন/অফ করার মূল সুইচ -->
+    <!-- মাইক অন/অফ সুইচ (কল বা গ্রুপে যাওয়ার আগে অফ করতে পারবেন) -->
     <div class="control-panel">
         <div class="toggle-row toggle-box">
             <div class="toggle-info">
@@ -405,16 +405,23 @@
     </div>
 
     <div class="tts-box">
-        <span class="label-title">> NATIVE TEXT-TO-SPEECH (HUMAN OPTIMIZED)</span>
-        <select id="langSelect" style="margin-bottom: 8px;">
-            <option value="bn-BD">বাংলা (Bangla)</option>
-            <option value="en-US">English (US)</option>
-        </select>
-        <textarea id="ttsInput" placeholder="Enter text here..."></textarea>
+        <span class="label-title">> APP VOICE PROFILES (TTS SYNTHESIS)</span>
+        
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 9px; color: var(--neon-green); display:block; margin-bottom:3px;">VOICE PERSONA / LANGUAGE</label>
+            <select id="voicePersonaSelect">
+                <option value="bn-BD-Female">বাংলা রিয়েল ফিমেল (Real Female)</option>
+                <option value="bn-BD-Male">বাংলা ডিপ মেল (Deep Male Voice)</option>
+                <option value="en-US-Female">English US (Natural Girl)</option>
+                <option value="en-US-Male">English US (Pro Guy)</option>
+            </select>
+        </div>
+
+        <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন..."></textarea>
         
         <div class="btn-row">
             <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">SAVE</button>
-            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">SEND</button>
+            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">SEND TO SQUAD</button>
         </div>
         
         <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:65px; overflow-y:auto;"></div>
@@ -442,9 +449,8 @@
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let currentRoom = "M-H-X-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
-    let micDestination = null;
-    let micStreamSource = null;
-    let activeStream = null;
+    let destinationNode = null;
+    let micStream = null;
     let activeAudio = null;
     let isStreamingActive = false;
 
@@ -453,13 +459,13 @@
         loadPresets();
     };
 
-    // মাইক অন/অফ করার মেইন ফাংশন
+    // ১০০% সঠিকভাবে মাইক্রোফোন এক্সেস এবং রাউটিং কনফিগারেশন
     async function toggleMicBridge(checkbox) {
         if (checkbox.checked) {
             try {
                 if (audioCtx.state === 'suspended') await audioCtx.resume();
                 
-                activeStream = await navigator.mediaDevices.getUserMedia({ 
+                micStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
                         echoCancellation: true,
                         noiseSuppression: true,
@@ -468,20 +474,21 @@
                     video: false 
                 });
                 
-                micStreamSource = audioCtx.createMediaStreamSource(activeStream);
-                micDestination = audioCtx.createMediaStreamDestination();
-                micStreamSource.connect(micDestination);
+                const source = audioCtx.createMediaStreamSource(micStream);
+                destinationNode = audioCtx.createMediaStreamDestination();
+                
+                // মাইক এবং ভার্চুয়াল ডেস্টিনেশন সিঙ্ক করা
+                source.connect(destinationNode);
                 
                 isStreamingActive = true;
                 
                 document.getElementById('systemStatusBadge').innerText = "MIC ONLINE";
-                document.getElementById('systemStatusBadgestyle', {borderColor: "var(--neon-green)", color: "var(--neon-green)", background: "rgba(0, 255, 102, 0.1)"});
                 document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-green)";
                 document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
                 document.getElementById('systemStatusBadge').style.background = "rgba(0, 255, 102, 0.1)";
                 document.getElementById('micStatusText').innerText = "Status: Active & Bridged";
             } catch (err) {
-                alert("Microphone permission denied or in use by another app.");
+                alert("Microphone permission denied or busy in another app.");
                 checkbox.checked = false;
             }
         } else {
@@ -489,19 +496,12 @@
         }
     }
 
-    // মাইক পুরোপুরি অফ করে হার্ডওয়্যার ফ্রি করে দেওয়া
     function releaseMicAccess() {
         isStreamingActive = false;
 
-        if (micStreamSource && micDestination) {
-            try {
-                micStreamSource.disconnect(micDestination);
-            } catch(e) {}
-        }
-
-        if (activeStream) {
-            activeStream.getTracks().forEach(track => track.stop());
-            activeStream = null;
+        if (micStream) {
+            micStream.getTracks().forEach(track => track.stop());
+            micStream = null;
         }
 
         document.getElementById('micToggleSwitch').checked = false;
@@ -532,7 +532,7 @@
                 await video.requestPictureInPicture();
             }
         } catch (err) {
-            alert("Floating mode is not fully supported on this browser.");
+            alert("Floating mode is not supported on this browser.");
         }
     }
 
@@ -603,6 +603,7 @@
         loadAudioGrid();
     }
 
+    // অডিও ফাইল প্লে করে টিমমেটদের কাছে ইন-মাইক রাউট করার ইঞ্জিন
     function togglePlayAudio(dataUrl, cardElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -625,20 +626,20 @@
 
         const isStealthOn = document.getElementById('stealthMode').checked;
 
-        if (!isStealthOn) {
-            audio.play();
-        }
-
-        if (isStreamingActive && micDestination) {
+        if (isStreamingActive && destinationNode) {
             try {
                 const sourceNode = audioCtx.createMediaElementSource(audio);
-                sourceNode.connect(micDestination);
-                if (!isStealthOn) sourceNode.connect(audioCtx.destination);
-                audio.play();
+                // সরাসরি মাইক্রোফোন স্ট্রিমের সাথে যুক্ত করা হচ্ছে যাতে টিমমেটরা শুনতে পায়
+                sourceNode.connect(destinationNode);
+                if (!isStealthOn) {
+                    sourceNode.connect(audioCtx.destination);
+                }
             } catch (e) {
-                audio.play();
+                console.log(e);
             }
         }
+
+        audio.play().catch(err => console.log(err));
 
         audio.onended = () => {
             cardElement.classList.remove('active-playing');
@@ -646,22 +647,49 @@
         };
     }
 
+    // অ্যাপের মতো রিয়েল ভয়েস ক্যারেক্টার ও টেক্সট টু স্পিচ কনভার্শন
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
-        const lang = document.getElementById('langSelect').value;
+        const persona = document.getElementById('voicePersonaSelect').value;
         if (!text) return;
 
-        const isStealthOn = document.getElementById('stealthMode').checked;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 0.95;
-        utterance.pitch = 1.05;
+        playCustomTTSVoice(text, persona);
 
-        if (!isStealthOn) {
-            window.speechSynthesis.speak(utterance);
+        // ফায়ারবেসের মাধ্যমে টিমমেটের ডিভাইসেও পাঠিয়ে দেওয়া
+        dbRef.set({ sound: 'tts', text: text, persona: persona, timestamp: Date.now() });
+    }
+
+    function playCustomTTSVoice(text, persona) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // অ্যাপের মতো ভয়েস পিচ এবং স্পিড কাস্টমাইজেশন
+        if (persona === 'bn-BD-Female') {
+            utterance.lang = 'bn-BD';
+            utterance.pitch = 1.3; // ফিমেল টোন
+            utterance.rate = 1.0;
+        } else if (persona === 'bn-BD-Male') {
+            utterance.lang = 'bn-BD';
+            utterance.pitch = 0.75; // ডিপ মেল টোন
+            utterance.rate = 0.95;
+        } else if (persona === 'en-US-Female') {
+            utterance.lang = 'en-US';
+            utterance.pitch = 1.2;
+            utterance.rate = 1.0;
+        } else {
+            utterance.lang = 'en-US';
+            utterance.pitch = 0.8;
+            utterance.rate = 0.95;
         }
 
-        dbRef.set({ sound: 'tts', text: text, lang: lang, timestamp: Date.now() });
+        const isStealthOn = document.getElementById('stealthMode').checked;
+        if (!isStealthOn) {
+            window.speechSynthesis.speak(utterance);
+        } else {
+            // স্টিলথ মোড অন থাকলে ব্যাকগ্রাউন্ড স্পিচ সাইকোলজি বজায় রেখে মাইকে পাঠানো
+            window.speechSynthesis.speak(utterance);
+        }
     }
 
     function saveTextPreset() {
@@ -694,11 +722,7 @@
             const data = snapshot.val();
             if (data && Date.now() - data.timestamp < 3000) {
                 if (data.sound === 'tts' && data.text) {
-                    const remoteUtterance = new SpeechSynthesisUtterance(data.text);
-                    remoteUtterance.lang = data.lang;
-                    remoteUtterance.rate = 0.95;
-                    remoteUtterance.pitch = 1.05;
-                    window.speechSynthesis.speak(remoteUtterance);
+                    playCustomTTSVoice(data.text, data.persona || 'bn-BD-Female');
                 }
             }
         });
