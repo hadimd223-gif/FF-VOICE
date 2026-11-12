@@ -3,28 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF VIP Soundboard Pro</title>
+    <title>CYBER-X // HACKER VIP SOUNDBOARD</title>
+    <!-- রোবোটিক এবং হ্যাকার স্টাইলের ফন্ট (Orbitron) -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0d0f18 0%, #1a1c29 100%);
-            --card-bg: rgba(26, 29, 45, 0.85);
-            --accent: #ff3366;
-            --accent-gradient: linear-gradient(135deg, #ff3366 0%, #ff6b6b 100%);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --bg-dark: #030712;
+            --card-bg: rgba(5, 15, 25, 0.9);
+            --neon-green: #00ff66;
+            --neon-red: #ff003c;
+            --green-glow: rgba(0, 255, 102, 0.3);
+            --red-glow: rgba(255, 0, 60, 0.3);
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         body {
-            background: var(--bg-gradient);
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -33,116 +40,117 @@
             padding: 15px;
         }
 
-        .vip-container {
+        .hacker-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 460px;
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 22px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(255, 51, 102, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 0 25px var(--green-glow), inset 0 0 15px rgba(0, 255, 102, 0.05);
+            position: relative;
+            overflow: hidden;
         }
 
-        .vip-header {
+        /* টার্মিনাল স্ক্যানলাইন এফেক্ট */
+        .hacker-container::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .terminal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--neon-green);
+            padding-bottom: 12px;
         }
 
-        .vip-header h1 {
-            font-size: 20px;
-            font-weight: 800;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
+        .terminal-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            letter-spacing: 2px;
         }
 
-        .live-badge {
+        .system-status {
             font-size: 11px;
             font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 8px var(--green-glow);
         }
 
-        .dot {
-            width: 7px;
-            height: 7px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: glow 1.5s infinite;
-        }
-
-        @keyframes glow {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        .control-group {
-            background: rgba(18, 20, 32, 0.7);
-            border-radius: 14px;
-            padding: 14px;
+        .control-panel {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            border-radius: 8px;
+            padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .label-title {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--neon-green);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
             display: block;
+            font-weight: 600;
         }
 
-        .room-row {
+        .input-row {
             display: flex;
             gap: 8px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 11px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: #0d0f18;
-            color: white;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--neon-green);
+            background: #000;
+            color: var(--neon-green);
             outline: none;
             font-size: 14px;
-            font-weight: 600;
+            font-family: 'Share Tech Mono', monospace;
+            box-shadow: inset 0 0 8px var(--green-glow);
         }
 
-        .btn-vip {
-            padding: 11px 18px;
+        .btn-cyber {
+            padding: 10px 16px;
             border: none;
-            border-radius: 10px;
-            background: var(--accent-gradient);
-            color: white;
-            font-weight: 700;
+            border-radius: 6px;
+            background: var(--neon-green);
+            color: #030712;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
-            font-size: 13px;
+            box-shadow: 0 0 12px var(--green-glow);
+            font-size: 12px;
         }
 
-        .btn-vip:active {
-            transform: scale(0.95);
+        .btn-cyber:hover {
+            background: #fff;
+            box-shadow: 0 0 20px var(--neon-green);
         }
 
-        /* VIP Toggle Switch */
-        .toggle-row {
+        /* হ্যাকার টগল সুইচ (লাল ও সবুজ থিম) */
+        .toggle-box {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -150,19 +158,21 @@
 
         .toggle-info span {
             font-size: 13px;
-            font-weight: 600;
+            font-weight: bold;
+            color: var(--neon-red);
+            text-shadow: 0 0 8px var(--neon-red);
             display: block;
         }
 
         .toggle-info small {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
         }
 
         .switch {
             position: relative;
             display: inline-block;
-            width: 48px;
+            width: 50px;
             height: 26px;
         }
 
@@ -176,50 +186,61 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #334155;
+            background-color: #1a0005;
+            border: 1px solid var(--neon-red);
             transition: .3s;
-            border-radius: 34px;
+            border-radius: 4px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 20px;
-            width: 20px;
+            height: 18px;
+            width: 18px;
             left: 3px;
             bottom: 3px;
-            background-color: white;
+            background-color: var(--neon-red);
             transition: .3s;
-            border-radius: 50%;
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--neon-red);
         }
 
         input:checked + .slider {
-            background-color: var(--accent);
-            box-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+            background-color: #001a0a;
+            border-color: var(--neon-green);
         }
 
         input:checked + .slider:before {
-            transform: translateX(22px);
+            transform: translateX(24px);
+            background-color: var(--neon-green);
+            box-shadow: 0 0 8px var(--neon-green);
         }
 
-        .mic-btn-full {
+        .mic-btn {
             width: 100%;
-            background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+            background: linear-gradient(135deg, #ff003c 0%, #990024 100%);
             padding: 12px;
-            border: none;
-            border-radius: 12px;
+            border: 1px solid var(--neon-red);
+            border-radius: 8px;
             color: white;
+            font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
+            box-shadow: 0 0 15px var(--red-glow);
             margin-bottom: 15px;
+            transition: 0.3s;
         }
 
+        .mic-btn:hover {
+            box-shadow: 0 0 25px var(--neon-red);
+        }
+
+        /* সাউন্ড গ্রিড (হ্যাকার স্টাইল বাটন) */
         .sound-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -227,84 +248,87 @@
             margin-bottom: 15px;
         }
 
-        .sound-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 14px 10px;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
+        .cyber-card {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            border-radius: 8px;
+            padding: 12px 8px;
+            color: var(--neon-green);
+            font-size: 12px;
+            font-family: 'Share Tech Mono', monospace;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease;
+            box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.1);
         }
 
-        .sound-card:hover {
-            background: rgba(255, 51, 102, 0.1);
-            border-color: rgba(255, 51, 102, 0.3);
+        .cyber-card:hover {
+            background: rgba(0, 255, 102, 0.1);
+            box-shadow: 0 0 12px var(--green-glow);
         }
 
-        .sound-card:active {
-            transform: scale(0.95);
+        .cyber-card.active-playing {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            background: rgba(255, 0, 60, 0.15);
+            box-shadow: 0 0 20px var(--neon-red);
+            animation: pulse-red 1s infinite alternate;
         }
 
-        .sound-card span.icon {
-            font-size: 22px;
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 10px var(--neon-red); }
+            100% { box-shadow: 0 0 25px var(--neon-red); }
         }
 
-        .upload-card {
-            background: rgba(13, 15, 24, 0.5);
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 12px;
+        .cyber-card span.icon {
+            font-size: 20px;
+        }
+
+        .upload-terminal {
+            background: #000;
+            border: 1px dashed var(--neon-green);
+            border-radius: 8px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .upload-card:hover {
-            border-color: var(--accent);
-        }
-
-        .upload-card label {
+        .upload-terminal label {
             cursor: pointer;
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 600;
+            color: var(--neon-green);
+            font-size: 11px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-<div class="vip-container">
-    <div class="vip-header">
-        <h1>FF VIP SOUNDBOARD</h1>
-        <div class="live-badge">
-            <div class="dot"></div>
-            <span>SECURE LINK</span>
+<div class="hacker-container">
+    <div class="terminal-header">
+        <h1>CYBER_X // ROOT</h1>
+        <div class="system-status">SECURE.SYS</div>
+    </div>
+
+    <!-- রুম কোড প্যানেল -->
+    <div class="control-panel">
+        <span class="label-title">> TARGET_ROOM_ID</span>
+        <div class="input-row">
+            <input type="text" id="roomCode" value="HACK-FF-01">
+            <button class="btn-cyber" onclick="changeRoom()">CONNECT</button>
         </div>
     </div>
 
-    <!-- রুম কানেকশন -->
-    <div class="control-group">
-        <span class="label-title">স্কোয়াড রুম কোড</span>
-        <div class="room-row">
-            <input type="text" id="roomCode" value="FF-VIP-99">
-            <button class="btn-vip" onclick="changeRoom()">সংযুক্ত</button>
-        </div>
-    </div>
-
-    <!-- ভিআইপি মোড সুইচ (টিমমেটরা শুনবে, আমি শুনব না) -->
-    <div class="control-group">
-        <div class="toggle-row">
+    <!-- ভিআইপি স্টিলথ মোড সুইচ (সবুজ/লাল হ্যাকার থিম) -->
+    <div class="control-panel">
+        <div class="toggle-row toggle-box">
             <div class="toggle-info">
-                <span>VIP Stealth Mode</span>
-                <small>ফোনে বাজবে না, শুধু টিমমেটরা শুনবে</small>
+                <span>STEALTH BYPASS</span>
+                <small>Local Speaker: Muted | Squad: Active</small>
             </div>
             <label class="switch">
                 <input type="checkbox" id="stealthMode" checked>
@@ -313,36 +337,36 @@
         </div>
     </div>
 
-    <!-- গেম মাইক ব্রিজ অ্যাক্টিভেশন -->
-    <button class="mic-btn-full" onclick="enableInGameMicBridge()">
-        🎙️ গেম মাইক ব্রিজ অন করুন (Connect Mic)
+    <!-- গেম মাইক ব্রিজ -->
+    <button class="mic-btn" onclick="enableInGameMicBridge()">
+        ⚡ ACTIVATE MIC INJECTION [ROOT]
     </button>
 
     <!-- সাউন্ডবোর্ড প্যানেল -->
-    <span class="label-title">সাউন্ড ইফেক্টস</span>
+    <span class="label-title">> EXECUTABLE_PAYLOADS</span>
     <div class="sound-grid" id="soundGrid">
-        <button class="sound-card" onclick="triggerSound('enemy', 440, 'sawtooth')">
+        <button class="cyber-card" onclick="toggleSound('enemy', 440, 'sawtooth', this)">
             <span class="icon">🚨</span>
-            <span>Enemy Ahead</span>
+            <span>ENEMY_ALERT.wav</span>
         </button>
-        <button class="sound-card" onclick="triggerSound('help', 587, 'triangle')">
+        <button class="cyber-card" onclick="toggleSound('help', 587, 'triangle', this)">
             <span class="icon">🆘</span>
-            <span>Help Me!</span>
+            <span>SOS_HELP.wav</span>
         </button>
-        <button class="sound-card" onclick="triggerSound('rush', 659, 'square')">
+        <button class="cyber-card" onclick="toggleSound('rush', 659, 'square', this)">
             <span class="icon">⚡</span>
-            <span>Let's Rush</span>
+            <span>RUSH_ATTACK.wav</span>
         </button>
-        <button class="sound-card" onclick="triggerSound('booyah', 880, 'sine')">
+        <button class="cyber-card" onclick="toggleSound('booyah', 880, 'sine', this)">
             <span class="icon">🔥</span>
-            <span>Booyah Sound</span>
+            <span>VICTORY_BOOYAH</span>
         </button>
     </div>
 
     <!-- কাস্টম ফাইল আপলোড -->
-    <div class="upload-card">
+    <div class="upload-terminal">
         <label for="audioFile">
-            📁 কাস্টম গান বা MP3 ফাইল আপলোড করুন
+            + INJECT CUSTOM PAYLOAD (.MP3)
         </label>
         <input type="file" id="audioFile" accept="audio/*" style="display:none" onchange="loadCustomAudio(event)">
     </div>
@@ -369,11 +393,17 @@
     const db = firebase.database();
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let currentRoom = "FF-VIP-99";
+    let currentRoom = "HACK-FF-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
 
-    // মাইক ব্রিজ ও অডিও রাউটিং সেটআপ
+    let activePlayer = {
+        name: null,
+        sourceNode: null,
+        oscillator: null,
+        buttonElement: null
+    };
+
     async function enableInGameMicBridge() {
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
@@ -382,12 +412,12 @@
             const sourceNode = audioCtx.createMediaStreamSource(micStream);
             
             const dest = audioCtx.createMediaStreamDestination();
-            sourceNode.connect(dest); // গেমের মাইকের জন্য পাস করা হলো
+            sourceNode.connect(dest);
             
             micDestination = dest;
-            alert("সফলভাবে গেম মাইক ব্রিজ কানেক্ট হয়েছে! এখন গেমের মাইক অন রাখলে টিমমেটরা শুনতে পাবে।");
+            alert("[SUCCESS] Mic injection protocol initialized successfully for Squad.");
         } catch (err) {
-            alert("মাইক পারমিশন পাওয়া যায়নি: " + err.message);
+            alert("[ERROR] Permission denied or blocked: " + err.message);
         }
     }
 
@@ -398,69 +428,93 @@
         dbRef.off();
         dbRef = db.ref('rooms/' + currentRoom + '/action');
         listenToFirebase();
-        alert("রুম কোড আপডেট হয়েছে: " + currentRoom);
+        alert("Target Room Switched to: " + currentRoom);
     }
 
-    // সাউন্ড প্লে এবং স্টিলথ মোড হ্যান্ডেলিং
-    function triggerSound(name, freq, type) {
+    // টগল সাউন্ড সিস্টেম (একবার চাপলে চালু, আবার চাপলে বন্ধ)
+    function toggleSound(name, freq, type, btnElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        
-        const isStealthOn = document.getElementById('stealthMode').checked;
 
-        // ১. টিমমেটদের কাছে ফায়ারবেসের মাধ্যমে সিগন্যাল পাঠানো
+        if (activePlayer.name === name) {
+            stopActiveSound();
+            dbRef.set({ sound: 'STOP', timestamp: Date.now() });
+            return;
+        }
+
+        stopActiveSound();
+        const isStealthOn = document.getElementById('stealthMode').checked;
+        playTone(name, freq, type, isStealthOn, btnElement);
+
         dbRef.set({
             sound: name,
             freq: freq,
             type: type,
+            action: 'PLAY',
             timestamp: Date.now()
         });
-
-        // ২. নিজের ফোনে বাজবে কিনা তা স্টিলথ মোড নির্ধারণ করবে
-        if (!isStealthOn) {
-            playAudioLocally(freq, type, false); // নিজের ফোনে বাজবে
-        } else {
-            // যদি স্টিলথ অন থাকে, তবে শুধু গেমের মাইক ব্রিজে যাবে, নিজের স্পিকারে বাজবে না
-            playAudioLocally(freq, type, true); 
-        }
     }
 
-    function playAudioLocally(freq, type, silentForMe) {
+    function playTone(name, freq, type, silentForMe, btnElement) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
         gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         
         if (!silentForMe) {
-            // নিজের স্পিকারে বাজানোর জন্য কানেক্ট করা
             osc.connect(gain);
             gain.connect(audioCtx.destination);
         }
 
-        // যদি মাইক ব্রিজ চালু থাকে, তবে টিমমেটদের শোনানোর জন্য রাউট করা
         if (micDestination) {
             osc.connect(gain);
             gain.connect(micDestination);
         }
         
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
+        
+        activePlayer = {
+            name: name,
+            oscillator: osc,
+            buttonElement: btnElement
+        };
+
+        if (btnElement) {
+            btnElement.classList.add('active-playing');
+        }
     }
 
-    // ফায়ারবেস থেকে রিমোট টিমমেটদের সাউন্ড রিসিভ করা
+    function stopActiveSound() {
+        if (activePlayer.oscillator) {
+            try {
+                activePlayer.oscillator.stop();
+                activePlayer.oscillator.disconnect();
+            } catch(e) {}
+        }
+        if (activePlayer.sourceNode) {
+            try {
+                activePlayer.sourceNode.stop();
+                activePlayer.sourceNode.disconnect();
+            } catch(e) {}
+        }
+        if (activePlayer.buttonElement) {
+            activePlayer.buttonElement.classList.remove('active-playing');
+        }
+        activePlayer = { name: null, sourceNode: null, oscillator: null, buttonElement: null };
+    }
+
     function listenToFirebase() {
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && Date.now() - data.timestamp < 3000) {
-                // এটি অন্য টিমমেট বা রিমোট ডিভাইস থেকে এসেছে কিনা তা চেক করে প্লে করা যায়
+                if (data.action === 'STOP' || data.sound === 'STOP') {
+                    // রিমোট অফ সিগন্যাল
+                }
             }
         });
     }
 
-    // কাস্টম MP3 ফাইল লোড
     function loadCustomAudio(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -470,12 +524,18 @@
             audioCtx.decodeAudioData(e.target.result, function(buffer) {
                 const grid = document.getElementById('soundGrid');
                 const btn = document.createElement('button');
-                btn.className = 'sound-card';
+                const soundKey = 'custom_' + Date.now();
+                btn.className = 'cyber-card';
                 btn.innerHTML = `<span class="icon">🎵</span><span>${file.name.substring(0, 10)}</span>`;
+                
                 btn.onclick = () => {
-                    const isStealthOn = document.getElementById('stealthMode').checked;
-                    playCustomBuffer(buffer, isStealthOn);
-                    dbRef.set({ sound: 'custom', timestamp: Date.now() });
+                    if (activePlayer.name === soundKey) {
+                        stopActiveSound();
+                    } else {
+                        stopActiveSound();
+                        const isStealthOn = document.getElementById('stealthMode').checked;
+                        playCustomBuffer(buffer, isStealthOn, btn, soundKey);
+                    }
                 };
                 grid.appendChild(btn);
             });
@@ -483,7 +543,7 @@
         reader.readAsArrayBuffer(file);
     }
 
-    function playCustomBuffer(buffer, silentForMe) {
+    function playCustomBuffer(buffer, silentForMe, btnElement, soundKey) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
@@ -496,6 +556,20 @@
         }
 
         source.start(0);
+
+        activePlayer = {
+            name: soundKey,
+            sourceNode: source,
+            buttonElement: btnElement
+        };
+
+        if (btnElement) {
+            btnElement.classList.add('active-playing');
+        }
+
+        source.onended = () => {
+            stopActiveSound();
+        };
     }
 
     listenToFirebase();
