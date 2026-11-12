@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER-X // HACKER VIP SOUNDBOARD</title>
-    <!-- রোবোটিক এবং হ্যাকার স্টাইলের ফন্ট (Orbitron) -->
+    <title>CYBER-X // AI VOICE CLONE INJECTOR</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-dark: #030712;
-            --card-bg: rgba(5, 15, 25, 0.9);
+            --card-bg: rgba(5, 15, 25, 0.92);
             --neon-green: #00ff66;
             --neon-red: #ff003c;
             --green-glow: rgba(0, 255, 102, 0.3);
@@ -52,31 +51,18 @@
             overflow: hidden;
         }
 
-        /* টার্মিনাল স্ক্যানলাইন এফেক্ট */
-        .hacker-container::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
-            pointer-events: none;
-            opacity: 0.3;
-        }
-
         .terminal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px dashed var(--neon-green);
-            padding-bottom: 12px;
+            padding-bottom: 10px;
         }
 
         .terminal-header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 900;
             color: var(--neon-green);
             text-shadow: 0 0 10px var(--neon-green);
@@ -84,29 +70,27 @@
         }
 
         .system-status {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
+            font-size: 10px;
+            padding: 3px 8px;
             border-radius: 4px;
             background: rgba(0, 255, 102, 0.1);
             color: var(--neon-green);
             border: 1px solid var(--neon-green);
-            box-shadow: 0 0 8px var(--green-glow);
         }
 
         .control-panel {
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(0, 255, 102, 0.2);
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 10px;
+            margin-bottom: 12px;
         }
 
         .label-title {
             font-size: 11px;
             color: var(--neon-green);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             margin-bottom: 6px;
             display: block;
             font-weight: 600;
@@ -117,21 +101,27 @@
             gap: 8px;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 10px 12px;
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
             border-radius: 6px;
             border: 1px solid var(--neon-green);
             background: #000;
             color: var(--neon-green);
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             font-family: 'Share Tech Mono', monospace;
             box-shadow: inset 0 0 8px var(--green-glow);
         }
 
+        textarea {
+            height: 65px;
+            resize: none;
+            margin-bottom: 8px;
+        }
+
         .btn-cyber {
-            padding: 10px 16px;
+            padding: 10px 14px;
             border: none;
             border-radius: 6px;
             background: var(--neon-green);
@@ -140,16 +130,23 @@
             font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 0 12px var(--green-glow);
-            font-size: 12px;
+            box-shadow: 0 0 10px var(--green-glow);
+            font-size: 11px;
         }
 
         .btn-cyber:hover {
             background: #fff;
-            box-shadow: 0 0 20px var(--neon-green);
         }
 
-        /* হ্যাকার টগল সুইচ (লাল ও সবুজ থিম) */
+        .tts-box {
+            background: rgba(0, 255, 102, 0.03);
+            border: 1px solid var(--neon-green);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* টগল সুইচ */
         .toggle-box {
             display: flex;
             justify-content: space-between;
@@ -157,7 +154,7 @@
         }
 
         .toggle-info span {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: var(--neon-red);
             text-shadow: 0 0 8px var(--neon-red);
@@ -165,22 +162,18 @@
         }
 
         .toggle-info small {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-muted);
         }
 
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 26px;
+            width: 44px;
+            height: 24px;
         }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .switch input { opacity: 0; width: 0; height: 0; }
 
         .slider {
             position: absolute;
@@ -195,14 +188,13 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 16px;
+            width: 16px;
             left: 3px;
             bottom: 3px;
             background-color: var(--neon-red);
             transition: .3s;
             border-radius: 2px;
-            box-shadow: 0 0 8px var(--neon-red);
         }
 
         input:checked + .slider {
@@ -211,98 +203,52 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(24px);
+            transform: translateX(20px);
             background-color: var(--neon-green);
-            box-shadow: 0 0 8px var(--neon-green);
         }
 
         .mic-btn {
             width: 100%;
             background: linear-gradient(135deg, #ff003c 0%, #990024 100%);
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--neon-red);
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 0 15px var(--red-glow);
-            margin-bottom: 15px;
-            transition: 0.3s;
+            box-shadow: 0 0 12px var(--red-glow);
+            margin-bottom: 12px;
         }
 
-        .mic-btn:hover {
-            box-shadow: 0 0 25px var(--neon-red);
-        }
-
-        /* সাউন্ড গ্রিড (হ্যাকার স্টাইল বাটন) */
         .sound-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .cyber-card {
             background: #000;
             border: 1px solid var(--neon-green);
-            border-radius: 8px;
-            padding: 12px 8px;
+            border-radius: 6px;
+            padding: 10px 6px;
             color: var(--neon-green);
-            font-size: 12px;
-            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.1);
-        }
-
-        .cyber-card:hover {
-            background: rgba(0, 255, 102, 0.1);
-            box-shadow: 0 0 12px var(--green-glow);
+            gap: 4px;
+            transition: 0.2s;
         }
 
         .cyber-card.active-playing {
             border-color: var(--neon-red);
             color: var(--neon-red);
             background: rgba(255, 0, 60, 0.15);
-            box-shadow: 0 0 20px var(--neon-red);
-            animation: pulse-red 1s infinite alternate;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 10px var(--neon-red); }
-            100% { box-shadow: 0 0 25px var(--neon-red); }
-        }
-
-        .cyber-card span.icon {
-            font-size: 20px;
-        }
-
-        .upload-terminal {
-            background: #000;
-            border: 1px dashed var(--neon-green);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .upload-terminal label {
-            cursor: pointer;
-            color: var(--neon-green);
-            font-size: 11px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 0 15px var(--neon-red);
         }
     </style>
 </head>
@@ -310,8 +256,8 @@
 
 <div class="hacker-container">
     <div class="terminal-header">
-        <h1>CYBER_X // ROOT</h1>
-        <div class="system-status">SECURE.SYS</div>
+        <h1>CYBER-X // AI CLONE</h1>
+        <div class="system-status">ONLINE</div>
     </div>
 
     <!-- রুম কোড প্যানেল -->
@@ -323,12 +269,12 @@
         </div>
     </div>
 
-    <!-- ভিআইপি স্টিলথ মোড সুইচ (সবুজ/লাল হ্যাকার থিম) -->
+    <!-- ভিআইপি স্টিলথ মোড -->
     <div class="control-panel">
         <div class="toggle-row toggle-box">
             <div class="toggle-info">
                 <span>STEALTH BYPASS</span>
-                <small>Local Speaker: Muted | Squad: Active</small>
+                <small>Local: Muted | Squad: Active</small>
             </div>
             <label class="switch">
                 <input type="checkbox" id="stealthMode" checked>
@@ -342,33 +288,43 @@
         ⚡ ACTIVATE MIC INJECTION [ROOT]
     </button>
 
-    <!-- সাউন্ডবোর্ড প্যানেল -->
-    <span class="label-title">> EXECUTABLE_PAYLOADS</span>
-    <div class="sound-grid" id="soundGrid">
-        <button class="cyber-card" onclick="toggleSound('enemy', 440, 'sawtooth', this)">
-            <span class="icon">🚨</span>
-            <span>ENEMY_ALERT.wav</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('help', 587, 'triangle', this)">
-            <span class="icon">🆘</span>
-            <span>SOS_HELP.wav</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('rush', 659, 'square', this)">
-            <span class="icon">⚡</span>
-            <span>RUSH_ATTACK.wav</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('booyah', 880, 'sine', this)">
-            <span class="icon">🔥</span>
-            <span>VICTORY_BOOYAH</span>
-        </button>
+    <!-- এআই ভয়েস ক্লোন ও টেক্সট-টু-স্পিচ বক্স -->
+    <div class="tts-box">
+        <span class="label-title">> SELECT CLONED VOICE & CONVERT</span>
+        
+        <!-- আগে থেকে সেট করা ক্লোন ভয়েসগুলোর ড্রপডাউন -->
+        <label style="font-size: 10px; color: #64748b; display: block; margin-bottom: 4px;">CHOOSE VOICE PROFILE:</label>
+        <select id="voiceSelect" style="margin-bottom: 8px;">
+            <!-- এখানে আপনার ইচ্ছেমতো ভয়েস আইডি এবং নাম সেট করে রাখতে পারবেন -->
+            <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Professional Female)</option>
+            <option value="AZnzlk1XvdvUeBnXmlld">Domi (Energetic Gaming)</option>
+            <option value="EXAVITQu4vr4xnSDxMaL">Bella (Soft Voice)</option>
+            <option value="ErXwobaYiN019PkySvjV">Antoni (Deep Male Voice)</option>
+        </select>
+
+        <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন (বাংলা বা ইংরেজি)..."></textarea>
+        <button class="btn-cyber" style="width: 100%;" onclick="generateAICloneVoice()">🗣️ GENERATE & SEND TO SQUAD</button>
     </div>
 
-    <!-- কাস্টম ফাইল আপলোড -->
-    <div class="upload-terminal">
-        <label for="audioFile">
-            + INJECT CUSTOM PAYLOAD (.MP3)
-        </label>
-        <input type="file" id="audioFile" accept="audio/*" style="display:none" onchange="loadCustomAudio(event)">
+    <!-- ক্লাসিক সাউন্ডবোর্ড প্যানেল -->
+    <span class="label-title">> QUICK PAYLOADS</span>
+    <div class="sound-grid" id="soundGrid">
+        <button class="cyber-card" onclick="toggleSound('enemy', 440, 'sawtooth', this)">
+            <span>🚨</span>
+            <span>ENEMY_ALERT</span>
+        </button>
+        <button class="cyber-card" onclick="toggleSound('help', 587, 'triangle', this)">
+            <span>🆘</span>
+            <span>SOS_HELP</span>
+        </button>
+        <button class="cyber-card" onclick="toggleSound('rush', 659, 'square', this)">
+            <span>⚡</span>
+            <span>RUSH_ATTACK</span>
+        </button>
+        <button class="cyber-card" onclick="toggleSound('booyah', 880, 'sine', this)">
+            <span>🔥</span>
+            <span>VICTORY_BOOYAH</span>
+        </button>
     </div>
 </div>
 
@@ -377,7 +333,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <script>
-    // আপনার ফায়ারবেস কনফিগারেশন
+    // ফায়ারবেস কনফিগারেশন
     const firebaseConfig = {
       apiKey: "AIzaSyAJWDIhsO4nAnBvpVZ0FP3kIlHFEU2Ysq4",
       authDomain: "m-h-x-wab-7abdf.firebaseapp.com",
@@ -396,28 +352,22 @@
     let currentRoom = "HACK-FF-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
+    let activePlayer = { name: null, oscillator: null, buttonElement: null };
 
-    let activePlayer = {
-        name: null,
-        sourceNode: null,
-        oscillator: null,
-        buttonElement: null
-    };
+    // আপনার ElevenLabs এপিআই কি এখানে বসিয়ে দেবেন (যেটি আপনি আগে পেয়েছিলেন)
+    const ELEVENLABS_API_KEY = "AIzaSyAJWDIhsO4nAnBvpVZ0FP3kIlHFEU2Ysq4"; // আপনার এপিআই কি এখানে আপডেট করে নিন
 
     async function enableInGameMicBridge() {
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
-            
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
             const sourceNode = audioCtx.createMediaStreamSource(micStream);
-            
             const dest = audioCtx.createMediaStreamDestination();
             sourceNode.connect(dest);
-            
             micDestination = dest;
-            alert("[SUCCESS] Mic injection protocol initialized successfully for Squad.");
+            alert("[SUCCESS] Mic injection protocol initialized successfully.");
         } catch (err) {
-            alert("[ERROR] Permission denied or blocked: " + err.message);
+            alert("[ERROR] Permission denied: " + err.message);
         }
     }
 
@@ -428,148 +378,125 @@
         dbRef.off();
         dbRef = db.ref('rooms/' + currentRoom + '/action');
         listenToFirebase();
-        alert("Target Room Switched to: " + currentRoom);
+        alert("Target Room Switched: " + currentRoom);
     }
 
-    // টগল সাউন্ড সিস্টেম (একবার চাপলে চালু, আবার চাপলে বন্ধ)
-    function toggleSound(name, freq, type, btnElement) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        if (activePlayer.name === name) {
-            stopActiveSound();
-            dbRef.set({ sound: 'STOP', timestamp: Date.now() });
+    // ElevenLabs এপিআই ব্যবহার করে সিলেক্ট করা ভয়েসে টেক্সট কনভার্ট করার ফাংশন
+    async function generateAICloneVoice() {
+        const text = document.getElementById('ttsInput').value.trim();
+        const voiceId = document.getElementById('voiceSelect').value;
+        if (!text) {
+            alert("অনুগ্রহ করে কিছু টেক্সট লিখুন!");
             return;
         }
 
-        stopActiveSound();
-        const isStealthOn = document.getElementById('stealthMode').checked;
-        playTone(name, freq, type, isStealthOn, btnElement);
+        alert("এআই ভয়েস প্রসেসিং হচ্ছে, একটু অপেক্ষা করুন...");
 
-        dbRef.set({
-            sound: name,
-            freq: freq,
-            type: type,
-            action: 'PLAY',
-            timestamp: Date.now()
-        });
+        try {
+            const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+                method: 'POST',
+                headers: {
+                    "Accept": "audio/mpeg",
+                    "Content-Type": "application/json",
+                    "xi-api-key": ELEVENLABS_API_KEY
+                },
+                body: JSON.stringify({
+                    text: text,
+                    model_id: "eleven_multilingual_v2", // বাংলা ও ইংরেজির জন্য সেরা মাল্টিলিঙ্গুয়াল মডেল
+                    voice_settings: {
+                        stability: 0.5,
+                        similarity_boost: 0.75
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("এপিআই কানেকশন ফেইল করেছে। আপনার এপিআই কি চেক করুন।");
+            }
+
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+
+            const isStealthOn = document.getElementById('stealthMode').checked;
+
+            // যদি স্টিলথ মোড অফ থাকে, তবে নিজের ফোনে স্পিকারে বাজবে
+            if (!isStealthOn) {
+                audio.play();
+            }
+
+            // যদি মাইক ব্রিজ অন থাকে, তবে গেমের মাইকের মাধ্যমে টিমমেটরা শুনতে পাবে
+            if (micDestination && audioCtx) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const source = audioCtx.createMediaElementSource(audio);
+                source.connect(micDestination);
+                source.connect(audioCtx.destination);
+                audio.play();
+            }
+
+            // ফায়ারবেসের মাধ্যমে টিমমেটদের কাছে অডিও লিংক বা সিগন্যাল পাঠানো
+            dbRef.set({
+                sound: 'ai_voice',
+                audioUrl: audioUrl,
+                timestamp: Date.now()
+            });
+
+            alert("সফলভাবে এআই ভয়েস জেনারেট এবং ইনজেক্ট করা হয়েছে!");
+
+        } catch (error) {
+            alert("ত্রুটি: " + error.message);
+        }
     }
 
-    function playTone(name, freq, type, silentForMe, btnElement) {
+    function toggleSound(name, freq, type, btnElement) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (activePlayer.name === name) {
+            stopActiveSound();
+            return;
+        }
+        stopActiveSound();
+        const isStealthOn = document.getElementById('stealthMode').checked;
+        
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-        
-        if (!silentForMe) {
+
+        if (!isStealthOn) {
             osc.connect(gain);
             gain.connect(audioCtx.destination);
         }
-
         if (micDestination) {
             osc.connect(gain);
             gain.connect(micDestination);
         }
-        
         osc.start();
         
-        activePlayer = {
-            name: name,
-            oscillator: osc,
-            buttonElement: btnElement
-        };
+        activePlayer = { name: name, oscillator: osc, buttonElement: btnElement };
+        if (btnElement) btnElement.classList.add('active-playing');
 
-        if (btnElement) {
-            btnElement.classList.add('active-playing');
-        }
+        dbRef.set({ sound: name, freq: freq, type: type, timestamp: Date.now() });
     }
 
     function stopActiveSound() {
         if (activePlayer.oscillator) {
-            try {
-                activePlayer.oscillator.stop();
-                activePlayer.oscillator.disconnect();
-            } catch(e) {}
+            try { activePlayer.oscillator.stop(); activePlayer.oscillator.disconnect(); } catch(e) {}
         }
-        if (activePlayer.sourceNode) {
-            try {
-                activePlayer.sourceNode.stop();
-                activePlayer.sourceNode.disconnect();
-            } catch(e) {}
-        }
-        if (activePlayer.buttonElement) {
-            activePlayer.buttonElement.classList.remove('active-playing');
-        }
-        activePlayer = { name: null, sourceNode: null, oscillator: null, buttonElement: null };
+        if (activePlayer.buttonElement) activePlayer.buttonElement.classList.remove('active-playing');
+        activePlayer = { name: null, oscillator: null, buttonElement: null };
     }
 
     function listenToFirebase() {
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data && Date.now() - data.timestamp < 3000) {
-                if (data.action === 'STOP' || data.sound === 'STOP') {
-                    // রিমোট অফ সিগন্যাল
+                if (data.sound === 'ai_voice' && data.audioUrl) {
+                    const remoteAudio = new Audio(data.audioUrl);
+                    remoteAudio.play().catch(e => console.log(e));
                 }
             }
         });
-    }
-
-    function loadCustomAudio(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            audioCtx.decodeAudioData(e.target.result, function(buffer) {
-                const grid = document.getElementById('soundGrid');
-                const btn = document.createElement('button');
-                const soundKey = 'custom_' + Date.now();
-                btn.className = 'cyber-card';
-                btn.innerHTML = `<span class="icon">🎵</span><span>${file.name.substring(0, 10)}</span>`;
-                
-                btn.onclick = () => {
-                    if (activePlayer.name === soundKey) {
-                        stopActiveSound();
-                    } else {
-                        stopActiveSound();
-                        const isStealthOn = document.getElementById('stealthMode').checked;
-                        playCustomBuffer(buffer, isStealthOn, btn, soundKey);
-                    }
-                };
-                grid.appendChild(btn);
-            });
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    function playCustomBuffer(buffer, silentForMe, btnElement, soundKey) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-
-        if (!silentForMe) {
-            source.connect(audioCtx.destination);
-        }
-        if (micDestination) {
-            source.connect(micDestination);
-        }
-
-        source.start(0);
-
-        activePlayer = {
-            name: soundKey,
-            sourceNode: source,
-            buttonElement: btnElement
-        };
-
-        if (btnElement) {
-            btnElement.classList.add('active-playing');
-        }
-
-        source.onended = () => {
-            stopActiveSound();
-        };
     }
 
     listenToFirebase();
