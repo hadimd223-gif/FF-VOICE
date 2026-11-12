@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER-X // VOICE & PRESET INJECTOR</title>
+    <title>CYBER-X // CUSTOM AUDIO INJECTOR</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -80,7 +80,7 @@
 
         .control-panel {
             background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--neon-green, #00ff66);
+            border: 1px solid var(--neon-green);
             border-radius: 8px;
             padding: 10px;
             margin-bottom: 12px;
@@ -115,7 +115,7 @@
         }
 
         textarea {
-            height: 60px;
+            height: 55px;
             resize: none;
             margin-bottom: 8px;
         }
@@ -157,10 +157,10 @@
             gap: 8px;
         }
 
-        /* সেভ করা লেখাগুলোর লিস্ট বা বাটন প্যানেল */
+        /* প্রিসেট ও ইম্পোর্ট ভয়েস লিস্ট */
         .saved-presets-container {
-            margin-top: 10px;
-            max-height: 100px;
+            margin-top: 8px;
+            max-height: 90px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -183,6 +183,39 @@
 
         .preset-chip:hover {
             background: rgba(0, 255, 102, 0.2);
+        }
+
+        .preset-chip.active-playing {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            background: rgba(255, 0, 60, 0.15);
+            box-shadow: 0 0 12px var(--neon-red);
+        }
+
+        /* ইম্পোর্ট ভয়েস আপলোড বক্স */
+        .import-box {
+            background: #000;
+            border: 2px dashed var(--neon-green);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .import-box:hover {
+            background: rgba(0, 255, 102, 0.08);
+        }
+
+        .import-box label {
+            cursor: pointer;
+            color: var(--neon-green);
+            font-size: 11px;
+            display: block;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         /* টগল সুইচ */
@@ -260,42 +293,13 @@
             box-shadow: 0 0 12px var(--red-glow);
             margin-bottom: 12px;
         }
-
-        .sound-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .cyber-card {
-            background: #000;
-            border: 1px solid var(--neon-green);
-            border-radius: 6px;
-            padding: 10px 6px;
-            color: var(--neon-green);
-            font-size: 11px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: 0.2s;
-        }
-
-        .cyber-card.active-playing {
-            border-color: var(--neon-red);
-            color: var(--neon-red);
-            background: rgba(255, 0, 60, 0.15);
-            box-shadow: 0 0 15px var(--neon-red);
-        }
     </style>
 </head>
 <body>
 
 <div class="hacker-container">
     <div class="terminal-header">
-        <h1>CYBER-X // PRESET SYSTEM</h1>
+        <h1>CYBER-X // AUDIO INJECTOR</h1>
         <div class="system-status">ACTIVE</div>
     </div>
 
@@ -327,6 +331,14 @@
         ⚡ ACTIVATE MIC INJECTION [ROOT]
     </button>
 
+    <!-- নতুন অপশন: ইম্পোর্ট ভয়েস (মিউজিক ফাইল বা ভয়েস আপলোড) -->
+    <div class="import-box">
+        <label for="audioFileInput">
+            📁 [+ ইম্পোর্ট ভয়েস / মিউজিক ফাইল যোগ করুন]
+        </label>
+        <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
+    </div>
+
     <!-- টেক্সট-টু-স্পিচ এবং সেভ/সেন্ড প্যানেল -->
     <div class="tts-box">
         <span class="label-title">> VOICE SYNTHESIS & PRESETS</span>
@@ -338,38 +350,15 @@
 
         <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন..."></textarea>
         
-        <!-- আপনার চাওয়া দুটি বাটন: সেভ করুন এবং সেন্ড করুন -->
         <div class="btn-row" style="margin-bottom: 8px;">
             <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">💾 সেভ করুন</button>
             <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">🚀 সেন্ড করুন</button>
         </div>
 
-        <!-- সেভ করা লেখাগুলোর লিস্ট এখানে নিচে শো করবে -->
-        <span class="label-title" style="font-size: 10px; margin-top: 8px;">> SAVED PRESETS (ক্লিক করলেই সেন্ড হবে):</span>
+        <span class="label-title" style="font-size: 10px; margin-top: 8px;">> SAVED PRESETS & IMPORTED AUDIO:</span>
         <div class="saved-presets-container" id="presetsList">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে সেভ করা আইটেম এখানে যুক্ত হবে -->
+            <!-- সেভ করা লেখা ও ইম্পোর্ট করা মিউজিক ফাইল এখানে শো করবে -->
         </div>
-    </div>
-
-    <!-- ক্লাসিক সাউন্ডবোর্ড প্যানেল -->
-    <span class="label-title">> QUICK PAYLOADS</span>
-    <div class="sound-grid" id="soundGrid">
-        <button class="cyber-card" onclick="toggleSound('enemy', 440, 'sawtooth', this)">
-            <span>🚨</span>
-            <span>ENEMY_ALERT</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('help', 587, 'triangle', this)">
-            <span>🆘</span>
-            <span>SOS_HELP</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('rush', 659, 'square', this)">
-            <span>⚡</span>
-            <span>RUSH_ATTACK</span>
-        </button>
-        <button class="cyber-card" onclick="toggleSound('booyah', 880, 'sine', this)">
-            <span>🔥</span>
-            <span>VICTORY_BOOYAH</span>
-        </button>
     </div>
 </div>
 
@@ -396,9 +385,8 @@
     let currentRoom = "HACK-FF-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
-    let activePlayer = { name: null, oscillator: null, buttonElement: null };
+    let activeAudioElement = null; // ব্যাকগ্রাউন্ড অডিও ট্র্যাক কন্ট্রোল করার জন্য
 
-    // পেজ লোড হওয়ার সময় লোকাল স্টোরেজ থেকে সেভ করা প্রিসেটগুলো লোড করা
     window.onload = function() {
         loadPresets();
     };
@@ -427,7 +415,80 @@
         alert("Target Room Switched: " + currentRoom);
     }
 
-    // ১. সেন্ড করুন বাটন (ইনস্ট্যান্ট ভয়েস প্লে ও টিমমেটদের কাছে পাঠানো)
+    // ব্যাকগ্রাউন্ডে মিউজিক বা ভয়েস ফাইল প্লে এবং টিমমেটদের শোনানোর ফাংশন
+    function playAudioFile(url, fileName, chipElement) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        // যদি আগে থেকেই কোনো অডিও চলতে থাকে, তবে সেটি বন্ধ করে দেবো (টগল সিস্টেম)
+        if (activeAudioElement) {
+            activeAudioElement.pause();
+            activeAudioElement = null;
+            document.querySelectorAll('.preset-chip').forEach(el => el.classList.remove('active-playing'));
+            if (activeAudioElement && activeAudioElement.src === url) {
+                dbRef.set({ sound: 'AUDIO_STOP', timestamp: Date.now() });
+                return;
+            }
+        }
+
+        const audio = new Audio(url);
+        audio.loop = true; // ব্যাকগ্রাউন্ডে লুপ হয়ে চলার জন্য
+        activeAudioElement = audio;
+        if (chipElement) chipElement.classList.add('active-playing');
+
+        const isStealthOn = document.getElementById('stealthMode').checked;
+
+        // যদি স্টিলথ মোড অফ থাকে, তবে নিজের ফোনে স্পিকারে বাজবে
+        if (!isStealthOn) {
+            audio.play();
+        }
+
+        // যদি মাইক ব্রিজ অন থাকে, তবে গেমের মাইকের মাধ্যমে টিমমেটদের কাছে রাউট হবে
+        if (micDestination) {
+            try {
+                const sourceNode = audioCtx.createMediaElementSource(audio);
+                sourceNode.connect(micDestination);
+                if (!isStealthOn) sourceNode.connect(audioCtx.destination);
+                audio.play();
+            } catch (e) {
+                audio.play();
+            }
+        }
+
+        // ফায়ারবেসের মাধ্যমে রুমের অন্য টিমমেটদের সিগন্যাল পাঠানো
+        dbRef.set({
+            sound: 'custom_audio',
+            audioUrl: url,
+            fileName: fileName,
+            timestamp: Date.now()
+        });
+    }
+
+    // ফাইল ম্যানেজার থেকে নতুন মিউজিক বা ভয়েস ফাইল ইম্পোর্ট করা
+    function importAudioFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const audioDataUrl = e.target.result;
+            let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
+            
+            // অবজেক্ট আকারে ফাইল সেভ করা (টাইপ মিউজিক বা টেক্সট বুঝানোর জন্য)
+            const newItem = {
+                type: 'audio',
+                name: file.name,
+                data: audioDataUrl
+            };
+
+            savedPresets.push(newItem);
+            localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
+            loadPresets();
+            alert("সফলভাবে ভয়েস/মিউজিক ফাইল ইম্পোর্ট করা হয়েছে!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // টেক্সট সেন্ড করার ফাংশন
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
         const lang = document.getElementById('langSelect').value;
@@ -457,7 +518,7 @@
         });
     }
 
-    // ২. সেভ করুন বাটন (নিচে লিস্টে সেভ করে রাখা)
+    // টেক্সট সেভ করার ফাংশন
     function saveTextPreset() {
         const text = document.getElementById('ttsInput').value.trim();
         if (!text) {
@@ -466,89 +527,58 @@
         }
 
         let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
-        if (!savedPresets.includes(text)) {
-            savedPresets.push(text);
-            localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
-            loadPresets();
-            alert("সফলভাবে সেভ করা হয়েছে!");
-        } else {
-            alert("এই লেখাটি ইতিমধ্যে সেভ করা আছে!");
-        }
+        const newItem = {
+            type: 'text',
+            content: text
+        };
+
+        savedPresets.push(newItem);
+        localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
+        loadPresets();
+        alert("টেক্সট সফলভাবে সেভ করা হয়েছে!");
     }
 
-    // সেভ করা প্রেসেটগুলো স্ক্রিনে রেন্ডার করা
+    // সেভ করা আইটেম এবং ইম্পোর্ট করা ফাইলগুলো স্ক্রিনে দেখানো
     function loadPresets() {
         const container = document.getElementById('presetsList');
         container.innerHTML = '';
         let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
 
         if (savedPresets.length === 0) {
-            container.innerHTML = '<span style="font-size:10px; color:#64748b;">কোনো প্রিসেট সেভ করা নেই।</span>';
+            container.innerHTML = '<span style="font-size:10px; color:#64748b;">কোনো ফাইল বা টেক্সট সেভ করা নেই।</span>';
             return;
         }
 
         savedPresets.forEach((item, index) => {
             const chip = document.createElement('div');
             chip.className = 'preset-chip';
-            chip.innerHTML = `<span>> ${item.substring(0, 25)}${item.length > 25 ? '...' : ''}</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="deletePreset(event, ${index})">[X]</span>`;
-            
-            // সেভ করা লেখার ওপর ক্লিক করলেই সেটি ইনস্ট্যান্ট সেন্ড হয়ে যাবে
-            chip.onclick = (e) => {
-                if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
-                    document.getElementById('ttsInput').value = item;
-                    executeSpeechAndSync(item, document.getElementById('langSelect').value);
-                }
-            };
+
+            if (item.type === 'audio') {
+                chip.innerHTML = `<span>🎵 [AUDIO] ${item.name.substring(0, 20)}...</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="deletePreset(event, ${index})">[X]</span>`;
+                chip.onclick = (e) => {
+                    if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
+                        playAudioFile(item.data, item.name, chip);
+                    }
+                };
+            } else {
+                chip.innerHTML = `<span>💬 ${item.content.substring(0, 22)}...</span> <span style="color:var(--neon-red); cursor:pointer;" onclick="deletePreset(event, ${index})">[X]</span>`;
+                chip.onclick = (e) => {
+                    if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
+                        document.getElementById('ttsInput').value = item.content;
+                        executeSpeechAndSync(item.content, document.getElementById('langSelect').value);
+                    }
+                };
+            }
             container.appendChild(chip);
         });
     }
 
-    // সেভ করা আইটেম ডিলিট করার ফাংশন
     function deletePreset(event, index) {
         event.stopPropagation();
         let savedPresets = JSON.parse(localStorage.getItem('ff_hacker_presets') || '[]');
         savedPresets.splice(index, 1);
         localStorage.setItem('ff_hacker_presets', JSON.stringify(savedPresets));
         loadPresets();
-    }
-
-    function toggleSound(name, freq, type, btnElement) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        if (activePlayer.name === name) {
-            stopActiveSound();
-            return;
-        }
-        stopActiveSound();
-        const isStealthOn = document.getElementById('stealthMode').checked;
-        
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-
-        if (!isStealthOn) {
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-        }
-        if (micDestination) {
-            osc.connect(gain);
-            gain.connect(micDestination);
-        }
-        osc.start();
-        
-        activePlayer = { name: name, oscillator: osc, buttonElement: btnElement };
-        if (btnElement) btnElement.classList.add('active-playing');
-
-        dbRef.set({ sound: name, freq: freq, type: type, timestamp: Date.now() });
-    }
-
-    function stopActiveSound() {
-        if (activePlayer.oscillator) {
-            try { activePlayer.oscillator.stop(); activePlayer.oscillator.disconnect(); } catch(e) {}
-        }
-        if (activePlayer.buttonElement) activePlayer.buttonElement.classList.remove('active-playing');
-        activePlayer = { name: null, oscillator: null, buttonElement: null };
     }
 
     function listenToFirebase() {
@@ -559,6 +589,9 @@
                     const remoteUtterance = new SpeechSynthesisUtterance(data.text);
                     remoteUtterance.lang = data.lang;
                     window.speechSynthesis.speak(remoteUtterance);
+                } else if (data.sound === 'custom_audio' && data.audioUrl) {
+                    const remoteAudio = new Audio(data.audioUrl);
+                    remoteAudio.play().catch(e => console.log(e));
                 }
             }
         });
