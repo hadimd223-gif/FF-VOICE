@@ -52,6 +52,28 @@
             overflow: hidden;
         }
 
+        /* ফ্লোটিং বাটন (উপরের ডান কোণায়) */
+        .float-top-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--green-glow);
+            transition: 0.2s;
+            z-index: 100;
+        }
+
+        .float-top-btn:hover {
+            background: var(--neon-green);
+            color: #000;
+        }
+
         .terminal-header {
             display: flex;
             justify-content: space-between;
@@ -59,11 +81,12 @@
             margin-bottom: 15px;
             border-bottom: 1px dashed var(--neon-green);
             padding-bottom: 10px;
+            padding-right: 60px;
         }
 
         .terminal-header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 900;
             color: var(--neon-green);
             text-shadow: 0 0 10px var(--neon-green);
@@ -71,8 +94,8 @@
         }
 
         .system-status {
-            font-size: 10px;
-            padding: 3px 8px;
+            font-size: 9px;
+            padding: 3px 6px;
             border-radius: 4px;
             background: rgba(0, 255, 102, 0.1);
             color: var(--neon-green);
@@ -116,7 +139,7 @@
         }
 
         textarea {
-            height: 55px;
+            height: 50px;
             resize: none;
             margin-bottom: 8px;
         }
@@ -158,108 +181,163 @@
             gap: 8px;
         }
 
-        /* চতুর্ভুজাকার ইম্পোর্ট ভয়েস বক্স (সিরিয়াল লিস্ট সহ) */
+        /* ইম্পোর্ট মডিউল ও গ্রিড */
         .import-section-box {
             background: rgba(0, 0, 0, 0.7);
             border: 2px solid var(--neon-green);
             border-radius: 10px;
             padding: 12px;
             margin-bottom: 12px;
-            box-shadow: inset 0 0 10px rgba(0,255,102,0.1);
         }
 
-        .import-drop-zone {
+        .import-grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .square-import-btn {
+            aspect-ratio: 1;
+            background: #000;
             border: 2px dashed var(--neon-green);
             border-radius: 8px;
-            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
-            margin-bottom: 10px;
+            padding: 5px;
         }
 
-        .import-drop-zone:hover {
-            background: rgba(0, 255, 102, 0.1);
+        .square-import-btn:hover {
+            background: rgba(0, 255, 102, 0.15);
+            box-shadow: 0 0 10px var(--green-glow);
         }
 
-        .import-drop-zone label {
+        .square-import-btn span {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .square-import-btn label {
             cursor: pointer;
             color: var(--neon-green);
-            font-size: 11px;
-            display: block;
-            text-transform: uppercase;
+            font-size: 9px;
             font-weight: bold;
-            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .audio-list-container {
-            max-height: 130px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .audio-item-box {
+        .square-audio-card {
+            aspect-ratio: 1;
             background: #050d14;
             border: 1px solid var(--neon-green);
-            border-radius: 6px;
-            padding: 8px 10px;
+            border-radius: 8px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            cursor: grab;
+            justify-content: center;
+            text-align: center;
+            padding: 6px;
+            cursor: pointer;
+            position: relative;
             transition: 0.2s;
         }
 
-        .audio-item-box:active {
-            cursor: grabbing;
-        }
-
-        .audio-item-box.active-playing {
+        .square-audio-card.active-playing {
             border-color: var(--neon-red);
             background: rgba(255, 0, 60, 0.2);
             color: var(--neon-red);
-            box-shadow: 0 0 12px var(--neon-red);
+            box-shadow: 0 0 15px var(--neon-red);
         }
 
-        .audio-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-        }
-
-        .audio-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .action-icon {
-            cursor: pointer;
-            font-size: 12px;
-            padding: 2px 4px;
-        }
-
-        /* ড্র্যাগ করে নিচে ফেলার ডিলিট জোন */
-        .trash-drop-zone {
-            display: none;
-            background: rgba(255, 0, 60, 0.2);
-            border: 2px dashed var(--neon-red);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            color: var(--neon-red);
-            font-size: 11px;
+        .square-audio-card .card-index {
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            font-size: 9px;
+            color: var(--neon-green);
             font-weight: bold;
-            margin-bottom: 10px;
-            animation: pulse-trash 1s infinite alternate;
         }
 
-        @keyframes pulse-trash {
-            0% { opacity: 0.6; }
-            100% { opacity: 1; }
+        .square-audio-card .card-icon {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .square-audio-card .card-name {
+            font-size: 9px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            word-break: break-all;
+        }
+
+        .square-audio-card .delete-btn {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 10px;
+            color: var(--neon-red);
+            cursor: pointer;
+        }
+
+        /* প্রিমিয়াম পারমিশন মোডাল ওভারলে */
+        .permission-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 380px;
+            background: #050f19;
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px var(--green-glow);
+        }
+
+        .modal-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--neon-green);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .modal-box p {
+            font-size: 12px;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .btn-done {
+            width: 100%;
+            background: var(--neon-green);
+            color: #030712;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--green-glow);
         }
 
         /* টগল সুইচ */
@@ -341,7 +419,19 @@
 </head>
 <body>
 
-<div class="hacker-container">
+<!-- প্রিমিয়াম পারমিশন মোডাল (শুধু ডান বাটনসহ) -->
+<div class="permission-modal" id="permissionModal">
+    <div class="modal-box">
+        <h2>SYSTEM PERMISSION REQUIRED</h2>
+        <p>Microphone access is required to inject audio payloads into the game squad channel.</p>
+        <button class="btn-done" onclick="requestMicPermission()">DONE</button>
+    </div>
+</div>
+
+<div class="hacker-container" id="mainContainer">
+    <!-- উপরের ডান কোণায় ফ্লোটিং মোড বাটন -->
+    <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
+
     <div class="terminal-header">
         <h1>M H X VOICE WEB</h1>
         <div class="system-status">ACTIVE</div>
@@ -375,25 +465,16 @@
         ⚡ ACTIVATE MIC INJECTION [ROOT]
     </button>
 
-    <!-- চতুর্ভুজাকার ইম্পোর্ট ভয়েস বক্স এবং সিরিয়াল লিস্ট -->
+    <!-- চতুর্ভুজাকার ইম্পোর্ট ভয়েস মডিউল ও গ্রিড -->
     <div class="import-section-box">
-        <span class="label-title">> IMPORTED AUDIO MODULE</span>
+        <span class="label-title">> AUDIO VAULT (SQUARE GRID)</span>
         
-        <!-- ডিলিট ড্রপ জোন (লং প্রেস করে নিচে টানলে শো করবে) -->
-        <div id="trashZone" class="trash-drop-zone">
-            🗑️ ডিলিট করতে এখানে এনে ছাড়ুন
-        </div>
-
-        <div class="import-drop-zone">
-            <label for="audioFileInput">
-                📁 [+ নতুন ভয়েস/মিউজিক ইম্পোর্ট করুন]
-            </label>
-            <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
-        </div>
-
-        <div class="label-title" style="font-size: 10px; margin-top: 6px;">> AUDIO LIST (১, ২, ৩ সিরিয়াল):</div>
-        <div class="audio-list-container" id="audioListContainer">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে সিরিয়াল অনুযায়ী বক্সগুলো এখানে আসবে -->
+        <div class="import-grid-wrapper" id="audioGridContainer">
+            <div class="square-import-btn" onclick="document.getElementById('audioFileInput').click()">
+                <span>📁</span>
+                <label>IMPORT</label>
+                <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
+            </div>
         </div>
     </div>
 
@@ -404,14 +485,14 @@
             <option value="bn-BD">বাংলা (Bangla)</option>
             <option value="en-US">English (US)</option>
         </select>
-        <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন..."></textarea>
+        <textarea id="ttsInput" placeholder="Enter text here..."></textarea>
         
         <div class="btn-row">
-            <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">💾 সেভ করুন</button>
-            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">🚀 সেন্ড করুন</button>
+            <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">SAVE</button>
+            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">SEND</button>
         </div>
         
-        <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:80px; overflow-y:auto;"></div>
+        <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:65px; overflow-y:auto;"></div>
     </div>
 </div>
 
@@ -439,14 +520,14 @@
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
     let activeAudio = null;
-    let activeItemIndex = null;
 
     window.onload = function() {
-        loadAudioList();
+        loadAudioGrid();
         loadPresets();
     };
 
-    async function enableInGameMicBridge() {
+    // সরাসরি পারমিশন নেওয়া এবং "DONE" বাটনে ক্লিক হ্যান্ডেল করা
+    async function requestMicPermission() {
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -454,9 +535,41 @@
             const dest = audioCtx.createMediaStreamDestination();
             sourceNode.connect(dest);
             micDestination = dest;
-            alert("[SUCCESS] Mic injection protocol initialized successfully.");
+            
+            // পারমিশন সফল হলে মোডাল সরিয়ে দেওয়া
+            document.getElementById('permissionModal').style.display = 'none';
         } catch (err) {
-            alert("[ERROR] Permission denied: " + err.message);
+            alert("Microphone permission is mandatory to run this system.");
+        }
+    }
+
+    async function enableInGameMicBridge() {
+        requestMicPermission();
+    }
+
+    // ফ্লোটিং উইন্ডো (Picture-in-Picture) মোড টগল করা
+    async function toggleFloatingMode() {
+        try {
+            if (document.pictureInPictureElement) {
+                await document.exitPictureInPicture();
+            } else {
+                // একটি ভার্চুয়াল ভিডিও ক্যানভাস তৈরি করে পাইপ মোড চালু করা
+                const canvas = document.createElement('canvas');
+                canvas.width = 400; canvas.height = 600;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = "#030712";
+                ctx.fillRect(0, 0, 400, 600);
+                ctx.fillStyle = "#00ff66";
+                ctx.font = "20px Orbitron";
+                ctx.fillText("M H X VOICE WEB FLOATING", 30, 50);
+
+                const video = document.createElement('video');
+                video.srcObject = canvas.captureStream();
+                video.autoplay = true;
+                await video.requestPictureInPicture();
+            }
+        } catch (err) {
+            alert("Floating mode is not fully supported on this mobile browser. Please use standard split-screen or game overlay.");
         }
     }
 
@@ -470,7 +583,6 @@
         alert("Target Room Switched: " + currentRoom);
     }
 
-    // অডিও ফাইল ইম্পোর্ট এবং সিরিয়াল লিস্ট তৈরি
     function importAudioFile(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -483,106 +595,70 @@
                 data: e.target.result
             });
             localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
-            loadAudioList();
-            alert("ভয়েস সফলভাবে ইম্পোর্ট করা হয়েছে!");
+            loadAudioGrid();
         };
         reader.readAsDataURL(file);
     }
 
-    // সিরিয়াল লিস্ট রেন্ডার করা (টগল প্লে/স্টপ এবং এডিট/রিনেম ফিচার সহ)
-    function loadAudioList() {
-        const container = document.getElementById('audioListContainer');
-        container.innerHTML = '';
+    function loadAudioGrid() {
+        const container = document.getElementById('audioGridContainer');
+        container.innerHTML = `
+            <div class="square-import-btn" onclick="document.getElementById('audioFileInput').click()">
+                <span>📁</span>
+                <label>IMPORT</label>
+                <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
+            </div>
+        `;
+
         let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
 
-        if (audioList.length === 0) {
-            container.innerHTML = '<span style="font-size:10px; color:#64748b; text-align:center; display:block;">কোনো ভয়েস ইম্পোর্ট করা নেই।</span>';
-            return;
-        }
-
         audioList.forEach((item, index) => {
-            const box = document.createElement('div');
-            box.className = 'audio-item-box';
-            box.draggable = true;
+            const card = document.createElement('div');
+            card.className = 'square-audio-card';
 
-            box.innerHTML = `
-                <div class="audio-info">
-                    <span style="color:var(--neon-green); font-weight:bold;">[${index + 1}]</span>
-                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">${item.name}</span>
-                </div>
-                <div class="audio-actions">
-                    <span class="action-icon" title="Rename" onclick="renameAudio(event, ${index})">✏️</span>
-                </div>
+            card.innerHTML = `
+                <span class="card-index">#${index + 1}</span>
+                <span class="delete-btn" onclick="deleteAudioItem(event, ${index})">×</span>
+                <span class="card-icon">🎵</span>
+                <span class="card-name">${item.name}</span>
             `;
 
-            // টগল প্লে/স্টপ সিস্টেম (একবার চাপলে বাজবে, আবার চাপলে বন্ধ হবে)
-            box.onclick = (e) => {
-                if (e.target.tagName === 'SPAN' && e.target.title === 'Rename') return;
-                togglePlayAudio(item.data, box);
+            card.onclick = (e) => {
+                if (e.target.classList.contains('delete-btn')) return;
+                togglePlayAudio(item.data, card);
             };
 
-            // লং প্রেস বা ড্র্যাগ করে ডিলিট করার হ্যান্ডলিং
-            box.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', index);
-                document.getElementById('trashZone').style.display = 'block';
-            });
-
-            box.addEventListener('dragend', () => {
-                document.getElementById('trashZone').style.display = 'none';
-            });
-
-            container.appendChild(box);
+            container.appendChild(card);
         });
     }
 
-    // ড্র্যাগ ওভার ট্র্যাশ জোন
-    const trashZone = document.getElementById('trashZone');
-    trashZone.addEventListener('dragover', (e) => { e.preventDefault(); });
-    trashZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const index = e.dataTransfer.getData('text/plain');
-        if (index !== "") {
-            deleteAudioItem(parseInt(index));
-        }
-        trashZone.style.display = 'none';
-    });
-
-    function deleteAudioItem(index) {
+    function deleteAudioItem(event, index) {
+        event.stopPropagation();
         let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
         audioList.splice(index, 1);
         localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
-        loadAudioList();
-        alert("ভয়েস সফলভাবে ডিলিট করা হয়েছে!");
+        loadAudioGrid();
     }
 
-    // রিনেম করার ফাংশন
-    function renameAudio(event, index) {
-        event.stopPropagation();
-        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
-        let newName = prompt("নতুন নাম লিখুন:", audioList[index].name);
-        if (newName) {
-            audioList[index].name = newName;
-            localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
-            loadAudioList();
-        }
-    }
-
-    // টগল প্লে এবং স্টিলথ মোড হ্যান্ডেলিং
-    function togglePlayAudio(dataUrl, boxElement) {
+    function togglePlayAudio(dataUrl, cardElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (activeAudio && activeAudio.currentSrc === dataUrl) {
+            activeAudio.pause();
+            activeAudio = null;
+            cardElement.classList.remove('active-playing');
+            return;
+        }
 
         if (activeAudio) {
             activeAudio.pause();
             activeAudio = null;
-            document.querySelectorAll('.audio-item-box').forEach(el => el.classList.remove('active-playing'));
-            if (activeAudio && activeAudio.src === dataUrl) {
-                return;
-            }
+            document.querySelectorAll('.square-audio-card').forEach(el => el.classList.remove('active-playing'));
         }
 
         const audio = new Audio(dataUrl);
         activeAudio = audio;
-        boxElement.classList.add('active-playing');
+        cardElement.classList.add('active-playing');
 
         const isStealthOn = document.getElementById('stealthMode').checked;
 
@@ -602,12 +678,11 @@
         }
 
         audio.onended = () => {
-            boxElement.classList.remove('active-playing');
+            cardElement.classList.remove('active-playing');
             activeAudio = null;
         };
     }
 
-    // টেক্সট টু স্পিচ ও প্রিসেট সিস্টেম
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
         const lang = document.getElementById('langSelect').value;
@@ -639,7 +714,7 @@
         let presets = JSON.parse(localStorage.getItem('mhx_presets') || '[]');
         presets.forEach((item) => {
             const chip = document.createElement('div');
-            chip.style.cssText = "background:rgba(0,255,102,0.08); border:1px dashed var(--neon-green); color:var(--neon-green); padding:5px 8px; border-radius:4px; font-size:10px; margin-bottom:4px; cursor:pointer;";
+            chip.style.cssText = "background:rgba(0,255,102,0.08); border:1px dashed var(--neon-green); color:var(--neon-green); padding:4px 6px; border-radius:4px; font-size:9px; margin-bottom:3px; cursor:pointer;";
             chip.innerText = "> " + item;
             chip.onclick = () => {
                 document.getElementById('ttsInput').value = item;
