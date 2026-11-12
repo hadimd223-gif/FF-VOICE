@@ -286,57 +286,6 @@
             cursor: pointer;
         }
 
-        .permission-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 380px;
-            background: #050f19;
-            border: 2px solid var(--neon-green);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 0 30px var(--green-glow);
-        }
-
-        .modal-box h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            color: var(--neon-green);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .modal-box p {
-            font-size: 12px;
-            color: var(--text-main);
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .btn-done {
-            width: 100%;
-            background: var(--neon-green);
-            color: #030712;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--green-glow);
-        }
-
         .toggle-box {
             display: flex;
             justify-content: space-between;
@@ -346,8 +295,8 @@
         .toggle-info span {
             font-size: 12px;
             font-weight: bold;
-            color: var(--neon-red);
-            text-shadow: 0 0 8px var(--neon-red);
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--green-glow);
             display: block;
         }
 
@@ -400,20 +349,12 @@
 </head>
 <body>
 
-<div class="permission-modal" id="permissionModal">
-    <div class="modal-box">
-        <h2>MIC ACCESS BRIDGE</h2>
-        <p>Click 'ACTIVATE' to connect the audio routing bridge so your squad can hear the sounds and voice payloads clearly.</p>
-        <button class="btn-done" onclick="requestMicPermission()">ACTIVATE SYSTEM</button>
-    </div>
-</div>
-
 <div class="hacker-container" id="mainContainer">
     <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
 
     <div class="terminal-header">
         <h1>M H X VOICE WEB</h1>
-        <div class="system-status" id="systemStatusBadge">BRIDGE STANDBY</div>
+        <div class="system-status" id="systemStatusBadge">MIC OFFLINE</div>
     </div>
 
     <div class="control-panel">
@@ -421,6 +362,20 @@
         <div class="input-row">
             <input type="text" id="roomCode" value="M-H-X-01">
             <button class="btn-cyber" onclick="changeRoom()">CONNECT</button>
+        </div>
+    </div>
+
+    <!-- মাইক অন/অফ করার মূল সুইচ -->
+    <div class="control-panel">
+        <div class="toggle-row toggle-box">
+            <div class="toggle-info">
+                <span>MIC BRIDGE CONTROL</span>
+                <small id="micStatusText">Status: Disconnected / Free</small>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="micToggleSwitch" onchange="toggleMicBridge(this)">
+                <span class="slider"></span>
+            </label>
         </div>
     </div>
 
@@ -435,11 +390,6 @@
                 <span class="slider"></span>
             </label>
         </div>
-    </div>
-
-    <div class="btn-row" style="margin-bottom: 12px;">
-        <button class="btn-cyber" style="flex:1;" onclick="enableStream()">🟢 STREAM ON</button>
-        <button class="btn-cyber btn-red" style="flex:1;" onclick="disableStream()">🔴 STREAM OFF</button>
     </div>
 
     <div class="import-section-box">
@@ -503,59 +453,63 @@
         loadPresets();
     };
 
-    async function requestMicPermission() {
-        try {
-            if (audioCtx.state === 'suspended') await audioCtx.resume();
-            
-            activeStream = await navigator.mediaDevices.getUserMedia({ 
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
-                }, 
-                video: false 
-            });
-            
-            micStreamSource = audioCtx.createMediaStreamSource(activeStream);
-            micDestination = audioCtx.createMediaStreamDestination();
-            
-            micStreamSource.connect(micDestination);
-            isStreamingActive = true;
-            
-            const badge = document.getElementById('systemStatusBadge');
-            badge.innerText = "BRIDGE ACTIVE";
-            badge.style.borderColor = "var(--neon-green)";
-            badge.style.color = "var(--neon-green)";
-            badge.style.background = "rgba(0, 255, 102, 0.1)";
-            
-            document.getElementById('permissionModal').style.display = 'none';
-        } catch (err) {
-            alert("Microphone permission is required to bridge audio into calls/games.");
+    // মাইক অন/অফ করার মেইন ফাংশন
+    async function toggleMicBridge(checkbox) {
+        if (checkbox.checked) {
+            try {
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+                
+                activeStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }, 
+                    video: false 
+                });
+                
+                micStreamSource = audioCtx.createMediaStreamSource(activeStream);
+                micDestination = audioCtx.createMediaStreamDestination();
+                micStreamSource.connect(micDestination);
+                
+                isStreamingActive = true;
+                
+                document.getElementById('systemStatusBadge').innerText = "MIC ONLINE";
+                document.getElementById('systemStatusBadgestyle', {borderColor: "var(--neon-green)", color: "var(--neon-green)", background: "rgba(0, 255, 102, 0.1)"});
+                document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-green)";
+                document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
+                document.getElementById('systemStatusBadge').style.background = "rgba(0, 255, 102, 0.1)";
+                document.getElementById('micStatusText').innerText = "Status: Active & Bridged";
+            } catch (err) {
+                alert("Microphone permission denied or in use by another app.");
+                checkbox.checked = false;
+            }
+        } else {
+            releaseMicAccess();
         }
     }
 
-    function enableStream() {
-        if (!activeStream || !micDestination) {
-            requestMicPermission();
-            return;
-        }
-        isStreamingActive = true;
-        const badge = document.getElementById('systemStatusBadge');
-        badge.innerText = "BRIDGE ACTIVE";
-        badge.style.borderColor = "var(--neon-green)";
-        badge.style.color = "var(--neon-green)";
-        badge.style.background = "rgba(0, 255, 102, 0.1)";
-        alert("Audio bridge enabled.");
-    }
-
-    function disableStream() {
+    // মাইক পুরোপুরি অফ করে হার্ডওয়্যার ফ্রি করে দেওয়া
+    function releaseMicAccess() {
         isStreamingActive = false;
-        const badge = document.getElementById('systemStatusBadge');
-        badge.innerText = "BRIDGE STANDBY";
-        badge.style.borderColor = "var(--neon-red)";
-        badge.style.color = "var(--neon-red)";
-        badge.style.background = "rgba(255, 0, 60, 0.1)";
-        alert("Audio bridge paused.");
+
+        if (micStreamSource && micDestination) {
+            try {
+                micStreamSource.disconnect(micDestination);
+            } catch(e) {}
+        }
+
+        if (activeStream) {
+            activeStream.getTracks().forEach(track => track.stop());
+            activeStream = null;
+        }
+
+        document.getElementById('micToggleSwitch').checked = false;
+        document.getElementById('systemStatusBadge').innerText = "MIC OFFLINE";
+        document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-red)";
+        document.getElementById('systemStatusBadge').style.color = "var(--neon-red)";
+        document.getElementById('systemStatusBadge').style.background = "rgba(255, 0, 60, 0.1)";
+        document.getElementById('micStatusText').innerText = "Status: Disconnected / Free";
     }
 
     async function toggleFloatingMode() {
