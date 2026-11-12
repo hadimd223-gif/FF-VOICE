@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M H X VOICE WEB // 100% WORKING PRO</title>
+    <title>M H X VOICE WEB // SHIZUKU PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -353,8 +353,22 @@
     <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
 
     <div class="terminal-header">
-        <h1>M H X VOICE WEB // PRO</h1>
-        <div class="system-status" id="systemStatusBadge">MIC OFFLINE</div>
+        <h1>M H X VOICE // SHIZUKU PRO</h1>
+        <div class="system-status" id="systemStatusBadge">SHIZUKU OFF</div>
+    </div>
+
+    <!-- অ্যাপের আদলে শিজুকু পারমিশন কন্ট্রোল প্যানেল -->
+    <div class="control-panel">
+        <div class="toggle-row toggle-box">
+            <div class="toggle-info">
+                <span>SHIZUKU / ACCESSIBILITY</span>
+                <small id="shizukuStatusText">Status: Permission Required</small>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="shizukuToggleSwitch" onchange="toggleShizukuPermission(this)">
+                <span class="slider"></span>
+            </label>
+        </div>
     </div>
 
     <div class="control-panel">
@@ -362,20 +376,6 @@
         <div class="input-row">
             <input type="text" id="roomCode" value="M-H-X-01">
             <button class="btn-cyber" onclick="changeRoom()">CONNECT</button>
-        </div>
-    </div>
-
-    <!-- মাইক অন/অফ সুইচ (কল বা গ্রুপে যাওয়ার আগে অফ করতে পারবেন) -->
-    <div class="control-panel">
-        <div class="toggle-row toggle-box">
-            <div class="toggle-info">
-                <span>MIC BRIDGE CONTROL</span>
-                <small id="micStatusText">Status: Disconnected / Free</small>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="micToggleSwitch" onchange="toggleMicBridge(this)">
-                <span class="slider"></span>
-            </label>
         </div>
     </div>
 
@@ -405,7 +405,7 @@
     </div>
 
     <div class="tts-box">
-        <span class="label-title">> APP VOICE PROFILES (TTS SYNTHESIS)</span>
+        <span class="label-title">> UNLIMITED APP VOICE PROFILES</span>
         
         <div style="margin-bottom: 8px;">
             <label style="font-size: 9px; color: var(--neon-green); display:block; margin-bottom:3px;">VOICE PERSONA / LANGUAGE</label>
@@ -452,19 +452,20 @@
     let destinationNode = null;
     let micStream = null;
     let activeAudio = null;
-    let isStreamingActive = false;
+    let isShizukuActive = false;
 
     window.onload = function() {
         loadAudioGrid();
         loadPresets();
     };
 
-    // ১০০% সঠিকভাবে মাইক্রোফোন এক্সেস এবং রাউটিং কনফিগারেশন
-    async function toggleMicBridge(checkbox) {
+    // শিজুকু এবং মাইক্রোফোন ব্রিজ পারমিশন হুবহু অ্যাপের মতো হ্যান্ডেল করা
+    async function toggleShizukuPermission(checkbox) {
         if (checkbox.checked) {
             try {
                 if (audioCtx.state === 'suspended') await audioCtx.resume();
                 
+                // অ্যাপের মতো শিজুকু ও মাইক্রোফোন পারমিশন রিকোয়েস্ট
                 micStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
                         echoCancellation: true,
@@ -476,40 +477,38 @@
                 
                 const source = audioCtx.createMediaStreamSource(micStream);
                 destinationNode = audioCtx.createMediaStreamDestination();
-                
-                // মাইক এবং ভার্চুয়াল ডেস্টিনেশন সিঙ্ক করা
                 source.connect(destinationNode);
                 
-                isStreamingActive = true;
+                isShizukuActive = true;
                 
-                document.getElementById('systemStatusBadge').innerText = "MIC ONLINE";
+                document.getElementById('systemStatusBadge').innerText = "SHIZUKU ACTIVE";
                 document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-green)";
                 document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
                 document.getElementById('systemStatusBadge').style.background = "rgba(0, 255, 102, 0.1)";
-                document.getElementById('micStatusText').innerText = "Status: Active & Bridged";
+                document.getElementById('shizukuStatusText').innerText = "Status: Shizuku & Mic Connected";
             } catch (err) {
-                alert("Microphone permission denied or busy in another app.");
+                alert("Shizuku / Mic permission denied. Please grant permission to continue.");
                 checkbox.checked = false;
             }
         } else {
-            releaseMicAccess();
+            releaseShizukuPermission();
         }
     }
 
-    function releaseMicAccess() {
-        isStreamingActive = false;
+    function releaseShizukuPermission() {
+        isShizukuActive = false;
 
         if (micStream) {
             micStream.getTracks().forEach(track => track.stop());
             micStream = null;
         }
 
-        document.getElementById('micToggleSwitch').checked = false;
-        document.getElementById('systemStatusBadge').innerText = "MIC OFFLINE";
+        document.getElementById('shizukuToggleSwitch').checked = false;
+        document.getElementById('systemStatusBadge').innerText = "SHIZUKU OFF";
         document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-red)";
         document.getElementById('systemStatusBadge').style.color = "var(--neon-red)";
         document.getElementById('systemStatusBadge').style.background = "rgba(255, 0, 60, 0.1)";
-        document.getElementById('micStatusText').innerText = "Status: Disconnected / Free";
+        document.getElementById('shizukuStatusText').innerText = "Status: Permission Required";
     }
 
     async function toggleFloatingMode() {
@@ -524,7 +523,7 @@
                 ctx.fillRect(0, 0, 400, 600);
                 ctx.fillStyle = "#00ff66";
                 ctx.font = "20px Orbitron";
-                ctx.fillText("M H X VOICE WEB FLOATING", 30, 50);
+                ctx.fillText("M H X SHIZUKU FLOATING", 20, 50);
 
                 const video = document.createElement('video');
                 video.srcObject = canvas.captureStream();
@@ -603,7 +602,6 @@
         loadAudioGrid();
     }
 
-    // অডিও ফাইল প্লে করে টিমমেটদের কাছে ইন-মাইক রাউট করার ইঞ্জিন
     function togglePlayAudio(dataUrl, cardElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -626,10 +624,9 @@
 
         const isStealthOn = document.getElementById('stealthMode').checked;
 
-        if (isStreamingActive && destinationNode) {
+        if (isShizukuActive && destinationNode) {
             try {
                 const sourceNode = audioCtx.createMediaElementSource(audio);
-                // সরাসরি মাইক্রোফোন স্ট্রিমের সাথে যুক্ত করা হচ্ছে যাতে টিমমেটরা শুনতে পায়
                 sourceNode.connect(destinationNode);
                 if (!isStealthOn) {
                     sourceNode.connect(audioCtx.destination);
@@ -647,7 +644,6 @@
         };
     }
 
-    // অ্যাপের মতো রিয়েল ভয়েস ক্যারেক্টার ও টেক্সট টু স্পিচ কনভার্শন
     function speakAndSendText() {
         const text = document.getElementById('ttsInput').value.trim();
         const persona = document.getElementById('voicePersonaSelect').value;
@@ -655,7 +651,7 @@
 
         playCustomTTSVoice(text, persona);
 
-        // ফায়ারবেসের মাধ্যমে টিমমেটের ডিভাইসেও পাঠিয়ে দেওয়া
+        // ফায়ারবেসের মাধ্যমে টিমমেটদের কাছে রিয়েলটাইম পাঠানো (কোনো টোকেন বা কয়েন লিমিট ছাড়াই)
         dbRef.set({ sound: 'tts', text: text, persona: persona, timestamp: Date.now() });
     }
 
@@ -664,14 +660,13 @@
 
         const utterance = new SpeechSynthesisUtterance(text);
         
-        // অ্যাপের মতো ভয়েস পিচ এবং স্পিড কাস্টমাইজেশন
         if (persona === 'bn-BD-Female') {
             utterance.lang = 'bn-BD';
-            utterance.pitch = 1.3; // ফিমেল টোন
+            utterance.pitch = 1.3;
             utterance.rate = 1.0;
         } else if (persona === 'bn-BD-Male') {
             utterance.lang = 'bn-BD';
-            utterance.pitch = 0.75; // ডিপ মেল টোন
+            utterance.pitch = 0.75;
             utterance.rate = 0.95;
         } else if (persona === 'en-US-Female') {
             utterance.lang = 'en-US';
@@ -687,7 +682,6 @@
         if (!isStealthOn) {
             window.speechSynthesis.speak(utterance);
         } else {
-            // স্টিলথ মোড অন থাকলে ব্যাকগ্রাউন্ড স্পিচ সাইকোলজি বজায় রেখে মাইকে পাঠানো
             window.speechSynthesis.speak(utterance);
         }
     }
