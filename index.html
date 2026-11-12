@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M H X VOICE WEB // SYSTEM</title>
+    <title>M H X VOICE WEB // PRO SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -402,9 +402,9 @@
 
 <div class="permission-modal" id="permissionModal">
     <div class="modal-box">
-        <h2>SYSTEM PERMISSION REQUIRED</h2>
-        <p>Microphone access is required to bridge audio payloads into the game or call channel smoothly.</p>
-        <button class="btn-done" onclick="requestMicPermission()">DONE</button>
+        <h2>MIC ACCESS BRIDGE</h2>
+        <p>Click 'ACTIVATE' to connect the audio routing bridge so your squad can hear the sounds and voice payloads clearly.</p>
+        <button class="btn-done" onclick="requestMicPermission()">ACTIVATE SYSTEM</button>
     </div>
 </div>
 
@@ -413,7 +413,7 @@
 
     <div class="terminal-header">
         <h1>M H X VOICE WEB</h1>
-        <div class="system-status" id="systemStatusBadge">STREAM MUTED</div>
+        <div class="system-status" id="systemStatusBadge">BRIDGE STANDBY</div>
     </div>
 
     <div class="control-panel">
@@ -507,7 +507,6 @@
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
             
-            // অপ্টিমাইজড অডিও সেটিংস যাতে ল্যাগ বা নয়েজ না করে
             activeStream = await navigator.mediaDevices.getUserMedia({ 
                 audio: {
                     echoCancellation: true,
@@ -524,14 +523,14 @@
             isStreamingActive = true;
             
             const badge = document.getElementById('systemStatusBadge');
-            badge.innerText = "STREAMING ACTIVE";
+            badge.innerText = "BRIDGE ACTIVE";
             badge.style.borderColor = "var(--neon-green)";
             badge.style.color = "var(--neon-green)";
             badge.style.background = "rgba(0, 255, 102, 0.1)";
             
             document.getElementById('permissionModal').style.display = 'none';
         } catch (err) {
-            alert("Microphone permission is required to stream audio into calls/games.");
+            alert("Microphone permission is required to bridge audio into calls/games.");
         }
     }
 
@@ -542,34 +541,21 @@
         }
         isStreamingActive = true;
         const badge = document.getElementById('systemStatusBadge');
-        badge.innerText = "STREAMING ACTIVE";
+        badge.innerText = "BRIDGE ACTIVE";
         badge.style.borderColor = "var(--neon-green)";
         badge.style.color = "var(--neon-green)";
         badge.style.background = "rgba(0, 255, 102, 0.1)";
-        alert("Audio streaming enabled.");
+        alert("Audio bridge enabled.");
     }
 
     function disableStream() {
         isStreamingActive = false;
-
-        if (micStreamSource && micDestination) {
-            try {
-                micStreamSource.disconnect(micDestination);
-            } catch(e) {}
-        }
-
-        if (activeStream) {
-            activeStream.getTracks().forEach(track => track.stop());
-            activeStream = null;
-        }
-
         const badge = document.getElementById('systemStatusBadge');
-        badge.innerText = "STREAM MUTED";
+        badge.innerText = "BRIDGE STANDBY";
         badge.style.borderColor = "var(--neon-red)";
         badge.style.color = "var(--neon-red)";
         badge.style.background = "rgba(255, 0, 60, 0.1)";
-        
-        alert("Audio streaming disabled and mic access released.");
+        alert("Audio bridge paused.");
     }
 
     async function toggleFloatingMode() {
