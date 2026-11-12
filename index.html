@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF Voice & Soundboard Pro</title>
+    <title>FF Voice & In-Game Soundboard</title>
     <style>
         :root {
             --bg-dark: #0f111a;
@@ -13,6 +13,7 @@
             --text-main: #ffffff;
             --text-muted: #8f95b2;
             --success: #00e676;
+            --warning: #ff9800;
         }
 
         * {
@@ -29,7 +30,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
@@ -37,7 +38,7 @@
             max-width: 480px;
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 20px;
+            padding: 18px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -46,31 +47,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .header h1 {
-            font-size: 20px;
+            font-size: 18px;
             letter-spacing: 1px;
             color: var(--accent);
         }
 
         .status-badge {
-            font-size: 12px;
-            padding: 4px 10px;
+            font-size: 11px;
+            padding: 4px 8px;
             border-radius: 20px;
             background: rgba(0, 230, 118, 0.15);
             color: var(--success);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: var(--success);
             border-radius: 50%;
             animation: pulse 1.5s infinite;
@@ -84,22 +85,23 @@
 
         .room-controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.15);
             background: #121420;
             color: white;
             outline: none;
+            font-size: 14px;
         }
 
         button.primary-btn {
-            padding: 12px 18px;
+            padding: 10px 15px;
             border: none;
             border-radius: 8px;
             background: var(--accent);
@@ -107,6 +109,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
+            font-size: 14px;
         }
 
         button.primary-btn:hover {
@@ -114,33 +117,49 @@
         }
 
         .section-title {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 0.8px;
+        }
+
+        /* ইন-গেম মাইক রাউটার প্যানেল */
+        .mic-routing-box {
+            background: #121420;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mic-routing-box p {
+            font-size: 12px;
+            color: var(--warning);
+            margin-bottom: 8px;
         }
 
         .sound-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .sound-btn {
             background: #23273d;
             border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 15px 10px;
+            border-radius: 10px;
+            padding: 12px 8px;
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s;
         }
 
@@ -150,52 +169,23 @@
         }
 
         .sound-btn span.icon {
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .custom-upload {
             background: #121420;
             border: 1px dashed rgba(255,255,255,0.2);
             border-radius: 10px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .custom-upload label {
             cursor: pointer;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             display: block;
-        }
-
-        .bg-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #121420;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        /* Floating Mini Overlay Simulation */
-        .floating-bubble {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 5px 20px rgba(255, 70, 85, 0.5);
-            cursor: grab;
-            z-index: 999;
-            user-select: none;
         }
     </style>
 </head>
@@ -203,22 +193,28 @@
 
 <div class="container">
     <div class="header">
-        <h1>IS VOICE PRO</h1>
+        <h1>FF IN-GAME SOUNDBOARD</h1>
         <div class="status-badge">
             <div class="status-dot"></div>
-            <span id="connStatus">Ready</span>
+            <span id="connStatus">Online</span>
         </div>
     </div>
 
-    <!-- টিমমেট কানেকশন রুম -->
-    <div class="section-title">টিম রুম (রিয়েল-টাইম সিঙ্ক)</div>
+    <!-- টিম রুম সিঙ্ক -->
+    <div class="section-title">টিম রুম কোড</div>
     <div class="room-controls">
-        <input type="text" id="roomCode" placeholder="রুম কোড দিন (যেমন: FF99)" value="FF77">
-        <button class="primary-btn" onclick="joinRoom()">যুক্ত হন</button>
+        <input type="text" id="roomCode" value="FF77">
+        <button class="primary-btn" onclick="changeRoom()">সংযুক্ত হন</button>
+    </div>
+
+    <!-- ইন-গেম মাইক ব্রিজ অপশন -->
+    <div class="mic-routing-box">
+        <p>⚠️ গেমের ভেতর সাউন্ড শোনাতে মাইক পারমিশন অন রাখুন</p>
+        <button class="primary-btn" style="background: #00bcd4; width: 100%; font-size: 13px;" onclick="enableInGameMicBridge()">🎙️ গেম মাইক ব্রিজ স্টার্ট করুন</button>
     </div>
 
     <!-- সাউন্ডবোর্ড বাটনসমূহ -->
-    <div class="section-title">ভয়েস ইফেক্ট ও সাউন্ডবোর্ড</div>
+    <div class="section-title">সাউন্ড ইফেক্ট</div>
     <div class="sound-grid" id="soundGrid">
         <button class="sound-btn" onclick="triggerSound('enemy', 440, 'sawtooth')">
             <span class="icon">🚨</span>
@@ -238,31 +234,115 @@
         </button>
     </div>
 
-    <!-- কাস্টম অডিও ফাইল আপলোড -->
+    <!-- কাস্টম অডিও আপলোড -->
     <div class="custom-upload">
         <label for="audioFile">
-            📁 ফোনের যেকোনো MP3/WAV সাউন্ড যোগ করুন
+            📁 গান বা কাস্টম MP3 সাউন্ড যোগ করুন
         </label>
         <input type="file" id="audioFile" accept="audio/*" style="display:none" onchange="loadCustomAudio(event)">
     </div>
-
-    <!-- ব্যাকগ্রাউন্ড প্লেব্যাক মোড -->
-    <div class="bg-toggle">
-        <span>ব্যাকগ্রাউন্ড ওভারলে অ্যাক্টিভ রাখুন</span>
-        <input type="checkbox" id="bgKeepAlive" checked onchange="toggleBackgroundAudio()">
-    </div>
 </div>
 
-<!-- ফ্লোটিং বাবল -->
-<div class="floating-bubble" id="floatBubble" title="ড্র্যাগ করে সরান">🎙️</div>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <script>
-    // Web Audio API কনটেক্সট (ইন্টারনাল সাউন্ড জেনারেট ও প্লে করার জন্য)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let customAudioBuffer = null;
-    let currentRoom = "FF77";
+    // আপনার ফায়ারবেস কনফিগারেশন
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJWDIhsO4nAnBvpVZ0FP3kIlHFEU2Ysq4",
+      authDomain: "m-h-x-wab-7abdf.firebaseapp.com",
+      databaseURL: "https://m-h-x-wab-7abdf-default-rtdb.firebaseio.com",
+      projectId: "m-h-x-wab-7abdf",
+      storageBucket: "m-h-x-wab-7abdf.firebasestorage.app",
+      messagingSenderId: "570748526283",
+      appId: "1:570748526283:web:a946d0c4d306226a88c54e",
+      measurementId: "G-R56NJRER3Q"
+    };
 
-    // কাস্টম MP3 লোড করা
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let currentRoom = "FF77";
+    let dbRef = db.ref('rooms/' + currentRoom + '/action');
+    let destinationStream = null;
+
+    // গেমের ইন-গেম মাইকের সাথে অডিও কানেক্ট করার ব্রিজ
+    async function enableInGameMicBridge() {
+        try {
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            
+            // মাইক্রোফোন পারমিশন নেওয়া এবং অডিও স্ট্রিম তৈরি করা
+            const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const sourceNode = audioCtx.createMediaStreamSource(micStream);
+            
+            // ডেস্টিনেশন নোড যা অডিও আউটপুটকে ইনপুটে রূপান্তর করবে
+            const dest = audioCtx.createMediaStreamDestination();
+            sourceNode.connect(dest);
+            
+            destinationStream = dest.stream;
+            alert("সফলভাবে মাইক ব্রিজ কানেক্ট হয়েছে! এখন ফ্রি ফায়ার গেমের গ্রুপে মাইক অন করলে এই সাউন্ডগুলো টিমমেটরাও শুনতে পাবে।");
+        } catch (err) {
+            alert("মাইক পারমিশন পাওয়া যায়নি বা ব্রাউজার ব্লক করেছে: " + err.message);
+        }
+    }
+
+    function changeRoom() {
+        const code = document.getElementById('roomCode').value.trim();
+        if (!code) return;
+        currentRoom = code;
+        dbRef.off();
+        dbRef = db.ref('rooms/' + currentRoom + '/action');
+        listenToFirebase();
+        alert("রুম পরিবর্তন হয়েছে: " + currentRoom);
+    }
+
+    function triggerSound(name, freq, type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        playAudioTone(freq, type);
+
+        // ফায়ারবেসে সিগন্যাল পাঠানো যাতে রিমোট টিমমেটরাও শুনতে পায়
+        dbRef.set({
+            sound: name,
+            freq: freq,
+            type: type,
+            timestamp: Date.now()
+        });
+    }
+
+    function playAudioTone(freq, type) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        // যদি মাইক ব্রিজ চালু থাকে, তবে সাউন্ডটি গেমের চ্যানেলেও পাস হবে
+        if (destinationStream) {
+            const destNode = audioCtx.createMediaStreamDestination();
+            gain.connect(destNode);
+        }
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function listenToFirebase() {
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data && Date.now() - data.timestamp < 3000) {
+                playAudioTone(data.freq, data.type);
+            }
+        });
+    }
+
     function loadCustomAudio(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -270,12 +350,14 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             audioCtx.decodeAudioData(e.target.result, function(buffer) {
-                customAudioBuffer = buffer;
                 const grid = document.getElementById('soundGrid');
                 const btn = document.createElement('button');
                 btn.className = 'sound-btn';
-                btn.innerHTML = `<span class="icon">🎵</span><span>${file.name.substring(0, 12)}</span>`;
-                btn.onclick = () => playCustomBuffer(buffer);
+                btn.innerHTML = `<span class="icon">🎵</span><span>${file.name.substring(0, 10)}</span>`;
+                btn.onclick = () => {
+                    playCustomBuffer(buffer);
+                    dbRef.set({ sound: 'custom', timestamp: Date.now() });
+                };
                 grid.appendChild(btn);
             });
         };
@@ -288,98 +370,9 @@
         source.buffer = buffer;
         source.connect(audioCtx.destination);
         source.start(0);
-        broadcastEvent('custom_audio');
     }
 
-    // বিল্ট-ইন সাউন্ড ইফেক্ট প্লে করা
-    function triggerSound(name, freq, type) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + 0.25);
-        
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
-
-        // রুমের অন্য টিমমেটদের কাছে সিগন্যাল পাঠানো
-        broadcastEvent(name);
-    }
-
-    // রুম কানেকশন সিস্টেম (BroadcastChannel দিয়ে লোকাল টেস্ট এবং Firebase-এর জন্য প্রস্তুত)
-    let channel = new BroadcastChannel('ff_voice_room_' + currentRoom);
-
-    function joinRoom() {
-        const code = document.getElementById('roomCode').value.trim();
-        if (!code) return;
-        currentRoom = code;
-        channel.close();
-        channel = new BroadcastChannel('ff_voice_room_' + currentRoom);
-        setupListener();
-        document.getElementById('connStatus').innerText = `Room: ${currentRoom}`;
-    }
-
-    function broadcastEvent(soundName) {
-        channel.postMessage({ type: 'PLAY_SOUND', sound: soundName, time: Date.now() });
-    }
-
-    function setupListener() {
-        channel.onmessage = (event) => {
-            if (event.data.type === 'PLAY_SOUND') {
-                console.log("Teammate played:", event.data.sound);
-                // টিমমেটের ডিভাইসে অটোমেটিক সাউন্ড প্লে হবে
-                if (event.data.sound === 'enemy') triggerSoundLocal(440, 'sawtooth');
-                if (event.data.sound === 'help') triggerSoundLocal(587, 'triangle');
-                if (event.data.sound === 'rush') triggerSoundLocal(659, 'square');
-                if (event.data.sound === 'booyah') triggerSoundLocal(880, 'sine');
-            }
-        };
-    }
-
-    function triggerSoundLocal(freq, type) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
-    }
-
-    // ব্যাকগ্রাউন্ড স্লিপ প্রিভেনশন (সাইলেন্ট অডিও লুপ)
-    function toggleBackgroundAudio() {
-        const isChecked = document.getElementById('bgKeepAlive').checked;
-        if (isChecked && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
-
-    // ফ্লোটিং বাবল ড্র্যাগ করার লজিক
-    const bubble = document.getElementById('floatBubble');
-    let isDragging = false;
-
-    bubble.addEventListener('touchmove', (e) => {
-        const touch = e.touches[0];
-        bubble.style.left = (touch.clientX - 27) + 'px';
-        bubble.style.top = (touch.clientY - 27) + 'px';
-        bubble.style.bottom = 'auto';
-        bubble.style.right = 'auto';
-    });
-
-    setupListener();
+    listenToFirebase();
 </script>
 
 </body>
