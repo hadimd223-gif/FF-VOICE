@@ -96,9 +96,9 @@
             font-size: 9px;
             padding: 3px 6px;
             border-radius: 4px;
-            background: rgba(0, 255, 102, 0.1);
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
+            background: rgba(255, 0, 60, 0.1);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
         }
 
         .control-panel {
@@ -416,7 +416,7 @@
 
     <div class="terminal-header">
         <h1>M H X VOICE WEB</h1>
-        <div class="system-status" id="systemStatusBadge">STANDBY</div>
+        <div class="system-status" id="systemStatusBadge">STREAM MUTED</div>
     </div>
 
     <div class="control-panel">
@@ -440,7 +440,7 @@
         </div>
     </div>
 
-    <!-- নতুন স্ট্রিমিং কন্ট্রোল বাটন দুটি (STREAM ON / STREAM OFF) -->
+    <!-- স্ট্রিমিং কন্ট্রোল বাটন দুটি -->
     <div class="btn-row" style="margin-bottom: 12px;">
         <button class="btn-cyber" style="flex:1;" onclick="enableStream()">🟢 STREAM ON</button>
         <button class="btn-cyber btn-red" style="flex:1;" onclick="disableStream()">🔴 STREAM OFF</button>
@@ -498,6 +498,7 @@
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
     let micDestination = null;
     let micStreamSource = null;
+    let activeStream = null; // মিডিয়া স্ট্রিম ট্র্যাক হোল্ড করার জন্য
     let activeAudio = null;
     let isStreamingActive = false;
 
@@ -509,49 +510,66 @@
     async function requestMicPermission() {
         try {
             if (audioCtx.state === 'suspended') await audioCtx.resume();
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            micStreamSource = audioCtx.createMediaStreamSource(stream);
+            
+            // নতুন করে মাইক স্ট্রিম রিকোয়েস্ট করা
+            activeStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            micStreamSource = audioCtx.createMediaStreamSource(activeStream);
             micDestination = audioCtx.createMediaStreamDestination();
             
-            // ডিফল্টভাবে কানেক্ট করে রাখা
             micStreamSource.connect(micDestination);
             isStreamingActive = true;
             
-            document.getElementById('systemStatusBadge').innerText = "STREAMING ACTIVE";
-            document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
+            const badge = document.getElementById('systemStatusBadge');
+            badge.innerText = "STREAMING ACTIVE";
+            badge.style.borderColor = "var(--neon-green)";
+            badge.style.color = "var(--neon-green)";
+            badge.style.background = "rgba(0, 255, 102, 0.1)";
+            
             document.getElementById('permissionModal').style.display = 'none';
         } catch (err) {
             alert("Microphone permission is mandatory to run this system.");
         }
     }
 
-    // STREAM ON বাটন (টিমমেটদের কাছে অডিও পৌঁছানো চালু হবে)
+    // STREAM ON বাটন
     function enableStream() {
-        if (!micDestination && !micStreamSource) {
+        if (!activeStream || !micDestination) {
             requestMicPermission();
             return;
         }
-        if (micStreamSource && micDestination) {
-            try { micStreamSource.disconnect(); } catch(e) {}
-            micStreamSource.connect(micDestination);
-        }
         isStreamingActive = true;
-        document.getElementById('systemStatusBadge').innerText = "STREAMING ACTIVE";
-        document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
+        const badge = document.getElementById('systemStatusBadge');
+        badge.innerText = "STREAMING ACTIVE";
+        badge.style.borderColor = "var(--neon-green)";
+        badge.style.color = "var(--neon-green)";
+        badge.style.background = "rgba(0, 255, 102, 0.1)";
         alert("Audio streaming to squad enabled.");
     }
 
-    // STREAM ON বাটন (টিমমেটদের কাছে অডিও পৌঁছানো বন্ধ হবে)
+    // STREAM OFF বাটন (সঙ্গে সঙ্গে মাইক এক্সেস পুরোপুরি বন্ধ এবং ট্র্যাক স্টপ করবে)
     function disableStream() {
+        isStreamingActive = false;
+
+        // অডিও নোড ডিসকানেক্ট করা
         if (micStreamSource && micDestination) {
             try {
                 micStreamSource.disconnect(micDestination);
             } catch(e) {}
         }
-        isStreamingActive = false;
-        document.getElementById('systemStatusBadge').innerText = "STREAM MUTED";
-        document.getElementById('systemStatusBadge').style.color = "var(--neon-red)";
-        alert("Audio streaming to squad disabled.");
+
+        // মূল মিডিয়া স্ট্রিমের ট্র্যাকগুলো পুরোপুরি বন্ধ (stop) করে দেওয়া যাতে মাইক এক্সেস রিলিজ হয়ে যায়
+        if (activeStream) {
+            activeStream.getTracks().forEach(track => track.stop());
+            activeStream = null;
+        }
+
+        const badge = document.getElementById('systemStatusBadge');
+        badge.innerText = "STREAM MUTED";
+        badge.style.borderColor = "var(--neon-red)";
+        badge.style.color = "var(--neon-red)";
+        badge.style.background = "rgba(255, 0, 60, 0.1)";
+        
+        alert("Audio streaming disabled and microphone access terminated.");
     }
 
     async function toggleFloatingMode() {
