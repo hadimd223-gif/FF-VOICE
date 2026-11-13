@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M H X VOICE WEB // SHIZUKU PRO</title>
+    <title>M H X VOICE STUDIO // DIRECT CLEAR AUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -96,9 +96,9 @@
             font-size: 9px;
             padding: 3px 6px;
             border-radius: 4px;
-            background: rgba(255, 0, 60, 0.1);
-            color: var(--neon-red);
-            border: 1px solid var(--neon-red);
+            background: rgba(0, 255, 102, 0.12);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
         }
 
         .control-panel {
@@ -193,7 +193,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin-top: 8px;
-            max-height: 140px;
+            max-height: 145px;
             overflow-y: auto;
         }
 
@@ -286,64 +286,23 @@
             cursor: pointer;
         }
 
-        .toggle-box {
+        .slider-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-
-        .toggle-info span {
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
             color: var(--neon-green);
-            text-shadow: 0 0 8px var(--green-glow);
-            display: block;
         }
 
-        .toggle-info small {
-            font-size: 9px;
-            color: var(--text-muted);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--neon-green);
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1a0005;
-            border: 1px solid var(--neon-red);
-            transition: .3s;
-            border-radius: 4px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: var(--neon-red);
-            transition: .3s;
-            border-radius: 2px;
-        }
-
-        input:checked + .slider {
-            background-color: #001a0a;
-            border-color: var(--neon-green);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(20px);
-            background-color: var(--neon-green);
         }
     </style>
 </head>
@@ -353,47 +312,32 @@
     <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
 
     <div class="terminal-header">
-        <h1>M H X VOICE // SHIZUKU PRO</h1>
-        <div class="system-status" id="systemStatusBadge">SHIZUKU OFF</div>
+        <h1>M H X VOICE // STUDIO PRO</h1>
+        <div class="system-status">DIRECT ENGINE READY</div>
     </div>
 
-    <!-- অ্যাপের আদলে শিজুকু পারমিশন কন্ট্রোল প্যানেল -->
+    <!-- ক্রিস্টাল ক্লিয়ার সাউন্ড বুস্টার কন্ট্রোল -->
     <div class="control-panel">
-        <div class="toggle-row toggle-box">
-            <div class="toggle-info">
-                <span>SHIZUKU / ACCESSIBILITY</span>
-                <small id="shizukuStatusText">Status: Permission Required</small>
+        <div class="slider-box">
+            <div class="slider-header">
+                <span>CRYSTAL VOICE & MUSIC BOOST</span>
+                <span id="boostVal">150%</span>
             </div>
-            <label class="switch">
-                <input type="checkbox" id="shizukuToggleSwitch" onchange="toggleShizukuPermission(this)">
-                <span class="slider"></span>
-            </label>
+            <input type="range" id="gainSlider" min="100" max="250" value="150" oninput="updateAudioGain(this.value)">
+            <small style="font-size: 9px; color: var(--text-muted);">* ন্যাচারাল ও ক্লিয়ার আউটপুটের জন্য অটো-কম্প্রেসর চালু আছে</small>
         </div>
     </div>
 
     <div class="control-panel">
-        <span class="label-title">> TARGET_ROOM_ID</span>
+        <span class="label-title">> SQUAD_SYNC_ROOM_ID</span>
         <div class="input-row">
             <input type="text" id="roomCode" value="M-H-X-01">
-            <button class="btn-cyber" onclick="changeRoom()">CONNECT</button>
-        </div>
-    </div>
-
-    <div class="control-panel">
-        <div class="toggle-row toggle-box">
-            <div class="toggle-info">
-                <span>STEALTH BYPASS</span>
-                <small>Local: Muted | Squad: Active</small>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="stealthMode" checked>
-                <span class="slider"></span>
-            </label>
+            <button class="btn-cyber" onclick="changeRoom()">SYNC</button>
         </div>
     </div>
 
     <div class="import-section-box">
-        <span class="label-title">> AUDIO VAULT (SQUARE GRID)</span>
+        <span class="label-title">> AUDIO & MUSIC VAULT (TAP TO PLAY)</span>
         
         <div class="import-grid-wrapper" id="audioGridContainer">
             <div class="square-import-btn" onclick="document.getElementById('audioFileInput').click()">
@@ -405,23 +349,23 @@
     </div>
 
     <div class="tts-box">
-        <span class="label-title">> UNLIMITED APP VOICE PROFILES</span>
+        <span class="label-title">> NATURAL VOICE GENERATOR</span>
         
         <div style="margin-bottom: 8px;">
-            <label style="font-size: 9px; color: var(--neon-green); display:block; margin-bottom:3px;">VOICE PERSONA / LANGUAGE</label>
+            <label style="font-size: 9px; color: var(--neon-green); display:block; margin-bottom:3px;">VOICE PROFILE</label>
             <select id="voicePersonaSelect">
-                <option value="bn-BD-Female">বাংলা রিয়েল ফিমেল (Real Female)</option>
-                <option value="bn-BD-Male">বাংলা ডিপ মেল (Deep Male Voice)</option>
+                <option value="bn-BD-Female">বাংলা ন্যাচারাল ফিমেল (Clear Female)</option>
+                <option value="bn-BD-Male">বাংলা ন্যাচারাল মেল (Clear Male)</option>
                 <option value="en-US-Female">English US (Natural Girl)</option>
-                <option value="en-US-Male">English US (Pro Guy)</option>
+                <option value="en-US-Male">English US (Natural Guy)</option>
             </select>
         </div>
 
-        <textarea id="ttsInput" placeholder="এখানে টেক্সট লিখুন..."></textarea>
+        <textarea id="ttsInput" placeholder="এখানে কথা লিখুন, একদম ক্লিয়ার শোনাবে..."></textarea>
         
         <div class="btn-row">
             <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">SAVE</button>
-            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">SEND TO SQUAD</button>
+            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">PLAY & BROADCAST</button>
         </div>
         
         <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:65px; overflow-y:auto;"></div>
@@ -446,69 +390,48 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // স্টুডিও কোয়ালিটি ক্লিয়ার অডিও ইঞ্জিন (মাইক্রোফোন এক্সেস ছাড়াই)
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // ভয়েস ও মিউজিক যাতে ফেটে না যায় এবং একদম ন্যাচারাল শোনায় তার জন্য কম্প্রেসর ও ফিল্টার
+    const compressor = audioCtx.createDynamicsCompressor();
+    compressor.threshold.setValueAtTime(-18, audioCtx.currentTime);
+    compressor.knee.setValueAtTime(20, audioCtx.currentTime);
+    compressor.ratio.setValueAtTime(6, audioCtx.currentTime);
+    compressor.attack.setValueAtTime(0.003, audioCtx.currentTime);
+    compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+    const vocalClarityFilter = audioCtx.createBiquadFilter();
+    vocalClarityFilter.type = "peaking";
+    vocalClarityFilter.frequency.setValueAtTime(2800, audioCtx.currentTime); // ভোকাল স্পষ্ট করার ফ্রিকোয়েন্সি
+    vocalClarityFilter.Q.setValueAtTime(1.2, audioCtx.currentTime);
+    vocalClarityFilter.gain.setValueAtTime(3.5, audioCtx.currentTime);
+
+    const masterGainNode = audioCtx.createGain();
+    masterGainNode.gain.setValueAtTime(1.5, audioCtx.currentTime); // ডিফল্ট ১৫০% ক্লিয়ার বুস্ট
+
+    // অডিও চেইন কানেক্ট: Source -> Clarity Filter -> Compressor -> Master Gain -> Speaker
+    vocalClarityFilter.connect(compressor);
+    compressor.connect(masterGainNode);
+    masterGainNode.connect(audioCtx.destination);
+
     let currentRoom = "M-H-X-01";
     let dbRef = db.ref('rooms/' + currentRoom + '/action');
-    let destinationNode = null;
-    let micStream = null;
     let activeAudio = null;
-    let isShizukuActive = false;
 
     window.onload = function() {
         loadAudioGrid();
         loadPresets();
+        // ব্রাউজার ভয়েস লিস্ট প্রিলোড করা
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+        }
     };
 
-    // শিজুকু এবং মাইক্রোফোন ব্রিজ পারমিশন হুবহু অ্যাপের মতো হ্যান্ডেল করা
-    async function toggleShizukuPermission(checkbox) {
-        if (checkbox.checked) {
-            try {
-                if (audioCtx.state === 'suspended') await audioCtx.resume();
-                
-                // অ্যাপের মতো শিজুকু ও মাইক্রোফোন পারমিশন রিকোয়েস্ট
-                micStream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    }, 
-                    video: false 
-                });
-                
-                const source = audioCtx.createMediaStreamSource(micStream);
-                destinationNode = audioCtx.createMediaStreamDestination();
-                source.connect(destinationNode);
-                
-                isShizukuActive = true;
-                
-                document.getElementById('systemStatusBadge').innerText = "SHIZUKU ACTIVE";
-                document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-green)";
-                document.getElementById('systemStatusBadge').style.color = "var(--neon-green)";
-                document.getElementById('systemStatusBadge').style.background = "rgba(0, 255, 102, 0.1)";
-                document.getElementById('shizukuStatusText').innerText = "Status: Shizuku & Mic Connected";
-            } catch (err) {
-                alert("Shizuku / Mic permission denied. Please grant permission to continue.");
-                checkbox.checked = false;
-            }
-        } else {
-            releaseShizukuPermission();
-        }
-    }
-
-    function releaseShizukuPermission() {
-        isShizukuActive = false;
-
-        if (micStream) {
-            micStream.getTracks().forEach(track => track.stop());
-            micStream = null;
-        }
-
-        document.getElementById('shizukuToggleSwitch').checked = false;
-        document.getElementById('systemStatusBadge').innerText = "SHIZUKU OFF";
-        document.getElementById('systemStatusBadge').style.borderColor = "var(--neon-red)";
-        document.getElementById('systemStatusBadge').style.color = "var(--neon-red)";
-        document.getElementById('systemStatusBadge').style.background = "rgba(255, 0, 60, 0.1)";
-        document.getElementById('shizukuStatusText').innerText = "Status: Permission Required";
+    function updateAudioGain(val) {
+        document.getElementById('boostVal').innerText = val + "%";
+        const gainValue = val / 100;
+        masterGainNode.gain.setValueAtTime(gainValue, audioCtx.currentTime);
     }
 
     async function toggleFloatingMode() {
@@ -523,7 +446,7 @@
                 ctx.fillRect(0, 0, 400, 600);
                 ctx.fillStyle = "#00ff66";
                 ctx.font = "20px Orbitron";
-                ctx.fillText("M H X SHIZUKU FLOATING", 20, 50);
+                ctx.fillText("M H X DIRECT AUDIO", 20, 50);
 
                 const video = document.createElement('video');
                 video.srcObject = canvas.captureStream();
@@ -542,7 +465,7 @@
         dbRef.off();
         dbRef = db.ref('rooms/' + currentRoom + '/action');
         listenToFirebase();
-        alert("Target Room Switched: " + currentRoom);
+        alert("Squad Sync Room Connected: " + currentRoom);
     }
 
     function importAudioFile(event) {
@@ -605,7 +528,8 @@
     function togglePlayAudio(dataUrl, cardElement) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
-        if (activeAudio && activeAudio.currentSrc === dataUrl) {
+        // চলমান অডিও থামানো
+        if (activeAudio && activeAudio.dataset.src === dataUrl) {
             activeAudio.pause();
             activeAudio = null;
             cardElement.classList.remove('active-playing');
@@ -619,21 +543,17 @@
         }
 
         const audio = new Audio(dataUrl);
+        audio.dataset.src = dataUrl;
+        audio.crossOrigin = "anonymous";
         activeAudio = audio;
         cardElement.classList.add('active-playing');
 
-        const isStealthOn = document.getElementById('stealthMode').checked;
-
-        if (isShizukuActive && destinationNode) {
-            try {
-                const sourceNode = audioCtx.createMediaElementSource(audio);
-                sourceNode.connect(destinationNode);
-                if (!isStealthOn) {
-                    sourceNode.connect(audioCtx.destination);
-                }
-            } catch (e) {
-                console.log(e);
-            }
+        try {
+            // স্টুডিও ক্লিয়ার ফিল্টার ও কম্প্রেসরের মাধ্যমে সরাসরি প্লেব্যাক
+            const sourceNode = audioCtx.createMediaElementSource(audio);
+            sourceNode.connect(vocalClarityFilter);
+        } catch (e) {
+            console.log("Audio routing fallback:", e);
         }
 
         audio.play().catch(err => console.log(err));
@@ -651,39 +571,46 @@
 
         playCustomTTSVoice(text, persona);
 
-        // ফায়ারবেসের মাধ্যমে টিমমেটদের কাছে রিয়েলটাইম পাঠানো (কোনো টোকেন বা কয়েন লিমিট ছাড়াই)
+        // ফায়ারবেস রুমে যুক্ত থাকা টিমমেটদের কাছেও পাঠানো
         dbRef.set({ sound: 'tts', text: text, persona: persona, timestamp: Date.now() });
     }
 
     function playCustomTTSVoice(text, persona) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
+        window.speechSynthesis.cancel(); // আগের কোনো কথা আটকে থাকলে ক্লিয়ার করবে
 
         const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
         
+        // ন্যাচারাল টোন সেট করা (অতিরিক্ত পিচ কমিয়ে বা বাড়িয়ে রোবটিক না করা)
         if (persona === 'bn-BD-Female') {
             utterance.lang = 'bn-BD';
-            utterance.pitch = 1.3;
-            utterance.rate = 1.0;
+            const bnVoice = voices.find(v => v.lang.includes('bn'));
+            if (bnVoice) utterance.voice = bnVoice;
+            utterance.pitch = 1.05;
+            utterance.rate = 0.98;
         } else if (persona === 'bn-BD-Male') {
             utterance.lang = 'bn-BD';
-            utterance.pitch = 0.75;
-            utterance.rate = 0.95;
+            const bnVoice = voices.find(v => v.lang.includes('bn'));
+            if (bnVoice) utterance.voice = bnVoice;
+            utterance.pitch = 0.88;
+            utterance.rate = 0.96;
         } else if (persona === 'en-US-Female') {
             utterance.lang = 'en-US';
-            utterance.pitch = 1.2;
+            const enVoice = voices.find(v => v.lang.includes('en-US') && v.name.includes('Female')) || voices.find(v => v.lang.includes('en'));
+            if (enVoice) utterance.voice = enVoice;
+            utterance.pitch = 1.05;
             utterance.rate = 1.0;
         } else {
             utterance.lang = 'en-US';
-            utterance.pitch = 0.8;
-            utterance.rate = 0.95;
+            const enVoice = voices.find(v => v.lang.includes('en-US') && v.name.includes('Male')) || voices.find(v => v.lang.includes('en'));
+            if (enVoice) utterance.voice = enVoice;
+            utterance.pitch = 0.9;
+            utterance.rate = 0.98;
         }
 
-        const isStealthOn = document.getElementById('stealthMode').checked;
-        if (!isStealthOn) {
-            window.speechSynthesis.speak(utterance);
-        } else {
-            window.speechSynthesis.speak(utterance);
-        }
+        utterance.volume = 1.0; // সর্বোচ্চ স্পষ্ট ভলিউম
+        window.speechSynthesis.speak(utterance);
     }
 
     function saveTextPreset() {
