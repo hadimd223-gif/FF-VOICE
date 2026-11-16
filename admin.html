@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-H-X Admin</title>
+<style>
+:root{--g:#00ff41;--d:#003b10;--bg:#020a04;--r:#ff3860}
+*{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--g);font-family:'Courier New',monospace;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:20px}.screen{display:none}.screen.on{display:block}
+.card{background:#02140a;border:1px solid var(--g);border-radius:8px;padding:18px;margin:14px 0}
+h1{text-shadow:0 0 10px var(--g)}h3{margin-bottom:10px}
+button{background:transparent;color:var(--g);border:1px solid var(--g);padding:8px 14px;font-family:inherit;cursor:pointer;border-radius:4px}
+button:hover{background:var(--g);color:#000}button.red{color:var(--r);border-color:var(--r)}button.red:hover{background:var(--r);color:#000}
+input,textarea{background:#000;color:var(--g);border:1px solid var(--g);padding:8px;font-family:inherit;border-radius:4px;width:100%;margin:6px 0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tabs button.on{background:var(--g);color:#000}
+.tab{display:none}.tab.on{display:block}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px dashed var(--d);padding:8px;margin:6px 0;word-break:break-all;font-size:.85rem;flex-wrap:wrap}
+.muted{opacity:.6;font-size:.8rem}.top{display:flex;justify-content:space-between;align-items:center}
+.sw{display:flex;align-items:center;gap:12px}.sw input{width:auto}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--g);padding:10px 18px;display:none}
+</style></head><body><div id="toast"></div><div class="wrap">
+<div id="s-login" class="screen on" style="text-align:center"><div class="card"><h1>ADMIN//CONTROL</h1><br><button id="btnLogin">&gt; Google দিয়ে লগ ইন</button></div></div>
+<div id="s-deny" class="screen"><div class="card"><h1 style="color:var(--r)">ACCESS DENIED</h1><p style="margin:10px 0">আপনি অ্যাডমিন নন। Firebase Realtime Database-এ <b>admins/&lt;আপনার UID&gt; = true</b> বসান।</p>
+<div class="row"><span id="uid"></span><button onclick="cp(document.getElementById('uid').textContent)">Copy UID</button></div><br><button onclick="out()">Logout</button></div></div>
+
+<div id="s-app" class="screen">
+ <div class="top"><h1>ADMIN//CONTROL</h1><button onclick="out()">Logout</button></div>
+ <div class="tabs" id="tabs"></div>
+
+ <div class="tab on" id="t-set">
+  <div class="card"><h3>&gt; Maintenance</h3><div class="sw"><input type="checkbox" id="maint"><span id="mLbl">OFF</span></div></div>
+  <div class="card"><h3>&gt; Minimum Time (সেকেন্ড)</h3><p class="muted">এর আগে কেউ শর্টনার থেকে ফিরলে অটো ব্যান।</p><input type="number" id="minT" min="0"><button id="saveMin">Save</button></div>
+  <div class="card"><h3>&gt; Ads Code (HTML/Script)</h3><p class="muted">ইউজারদের পেজে দেখানো হবে (sandbox iframe-এ)।</p><textarea id="ads" rows="6"></textarea><button id="saveAds">Save</button></div>
+ </div>
+
+ <div class="tab" id="t-sh"><div class="card"><h3>&gt; Add Shortener</h3>
+  <p class="muted">শর্টনারে ডেস্টিনেশন হিসেবে দিন: <b id="siteUrl"></b>/?verify=1 — তারপর তৈরি শর্ট লিংকটি এখানে বসান।</p>
+  <input id="shName" placeholder="নাম (যেমন: Shortener 1)"><input id="shUrl" placeholder="https://short.link/xxxx"><button id="addSh">Add</button></div>
+  <div class="card"><h3>&gt; Shorteners</h3><div id="shList"></div></div></div>
+
+ <div class="tab" id="t-us"><div class="card"><h3>&gt; Users (<span id="uCount">0</span>)</h3>
+  <input id="uSearch" placeholder="নাম / ইমেইল / ইউনিক কোড দিয়ে সার্চ"><div id="uList"></div></div></div>
+
+ <div class="tab" id="t-ky"><div class="card"><h3>&gt; Add Keys (প্রতি লাইনে একটা)</h3><textarea id="kNew" rows="6"></textarea><button id="addK">Add to Stock</button></div>
+  <div class="card"><h3>&gt; Stock: <span id="kCount">0</span></h3><div id="kList"></div></div></div>
+</div></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getDatabase,ref,get,set,update,remove,push,onValue} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const app=initializeApp({apiKey:"AIzaSyCO9HM4YrxxitM3ek3KtbyisiUurIEDVtk",authDomain:"aincard-33f72.firebaseapp.com",databaseURL:"https://aincard-33f72-default-rtdb.firebaseio.com",projectId:"aincard-33f72",storageBucket:"aincard-33f72.firebasestorage.app",messagingSenderId:"809421343715",appId:"1:809421343715:web:1d4c24f370248742ce2ed6"});
+const auth=getAuth(app),db=getDatabase(app),$=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast=t=>{const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',3000)};
+window.cp=async t=>{try{await navigator.clipboard.writeText(t);toast('Copied ✔')}catch{}};
+window.out=()=>signOut(auth);
+const show=id=>document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+$('btnLogin').onclick=()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>toast(e.message));
+$('siteUrl').textContent=location.origin;
+const T=[['t-set','Settings'],['t-sh','Shorteners'],['t-us','Users'],['t-ky','Keys']];
+T.forEach(([id,n],i)=>{const b=document.createElement('button');b.textContent=n;if(!i)b.className='on';
+ b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id===id));[...$('tabs').children].forEach(x=>x.classList.toggle('on',x===b))};$('tabs').append(b)});
+
+let users={},S={};
+onAuthStateChanged(auth,async u=>{
+  if(!u){show('s-login');return}
+  $('uid').textContent=u.uid;
+  let ok=false;try{ok=(await get(ref(db,'admins/'+u.uid))).val()===true}catch{}
+  if(!ok){show('s-deny');return}
+  show('s-app');init();
+});
+
+function init(){
+  onValue(ref(db,'settings'),s=>{S=s.val()||{};
+    $('maint').checked=!!S.maintenance;$('mLbl').textContent=S.maintenance?'ON (সাইট বন্ধ)':'OFF';
+    if(document.activeElement!==$('minT'))$('minT').value=S.minTime||90;
+    if(document.activeElement!==$('ads'))$('ads').value=S.adsHtml||'';
+    const l=$('shList');l.innerHTML=Object.keys(S.shorteners||{}).length?'':'<p class="muted">কিছু নেই</p>';
+    Object.entries(S.shorteners||{}).forEach(([id,x])=>{
+      const d=document.createElement('div');d.className='row';d.innerHTML=`<div><b>${esc(x.name)}</b><div class="muted">${esc(x.url)}</div></div>`;
+      const a=document.createElement('button');a.textContent=x.on?'ON':'OFF';a.onclick=()=>update(ref(db,'settings/shorteners/'+id),{on:!x.on});
+      const r=document.createElement('button');r.className='red';r.textContent='Delete';r.onclick=()=>remove(ref(db,'settings/shorteners/'+id));
+      const w=document.createElement('div');w.append(a,' ',r);d.append(w);l.append(d)});
+  });
+  onValue(ref(db,'users'),s=>{users=s.val()||{};drawUsers()});
+  onValue(ref(db,'keys'),s=>{const k=s.val()||{};$('kCount').textContent=Object.keys(k).length;
+    const l=$('kList');l.innerHTML='';
+    Object.entries(k).forEach(([id,x])=>{const d=document.createElement('div');d.className='row';d.innerHTML=`<span>${esc(x.value)}</span>`;
+      const r=document.createElement('button');r.className='red';r.textContent='Delete';
+      r.onclick=()=>update(ref(db),{['keys/'+id]:null,['keyIds/'+id]:null});d.append(r);l.append(d)})});
+}
+$('maint').onchange=e=>update(ref(db,'settings'),{maintenance:e.target.checked});
+$('saveMin').onclick=()=>update(ref(db,'settings'),{minTime:Math.max(0,Number($('minT').value)||0)}).then(()=>toast('Saved'));
+$('saveAds').onclick=()=>update(ref(db,'settings'),{adsHtml:$('ads').value}).then(()=>toast('Saved'));
+$('addSh').onclick=async()=>{const n=$('shName').value.trim(),u=$('shUrl').value.trim();if(!n||!/^https?:\/\//.test(u))return toast('নাম ও সঠিক URL দিন');
+  await push(ref(db,'settings/shorteners'),{name:n,url:u,on:true});$('shName').value=$('shUrl').value='';toast('Added')};
+$('addK').onclick=async()=>{const lines=$('kNew').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!lines.length)return;
+  const up={};lines.forEach(v=>{const id=push(ref(db,'keys')).key;up['keys/'+id]={value:v};up['keyIds/'+id]=true});
+  await update(ref(db),up);$('kNew').value='';toast(lines.length+' keys added')};
+$('uSearch').oninput=drawUsers;
+function drawUsers(){
+  const q=$('uSearch').value.trim().toLowerCase(),l=$('uList');l.innerHTML='';
+  const all=Object.entries(users);$('uCount').textContent=all.length;
+  all.filter(([id,u])=>!q||[u.name,u.email,u.code].some(v=>String(v||'').toLowerCase().includes(q))).slice(0,100).forEach(([id,u])=>{
+    const d=document.createElement('div');d.className='row';
+    d.innerHTML=`<div><b>${esc(u.name)}</b> ${u.banned?'<span style="color:var(--r)">[BANNED]</span>':''}<div class="muted">${esc(u.email)} • ID: ${esc(u.code)}</div></div>`;
+    const b=document.createElement('button');b.textContent=u.banned?'Unban':'Ban';if(!u.banned)b.className='red';
+    b.onclick=()=>update(ref(db,'users/'+id),{banned:!u.banned});d.append(b);l.append(d)});
+}
+</script></body></html>

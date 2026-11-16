@@ -1,656 +1,169 @@
 <!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M H X VOICE STUDIO // DIRECT CLEAR AUDIO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-dark: #030712;
-            --card-bg: rgba(5, 15, 25, 0.95);
-            --neon-green: #00ff66;
-            --neon-red: #ff003c;
-            --green-glow: rgba(0, 255, 102, 0.3);
-            --red-glow: rgba(255, 0, 60, 0.3);
-            --text-main: #e2e8f0;
-            --text-muted: #64748b;
-        }
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-H-X</title>
+<style>
+:root{--g:#00ff41;--d:#003b10;--bg:#020a04;--r:#ff3860}
+*{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--g);font-family:'Courier New',monospace;min-height:100vh}
+#rain{position:fixed;inset:0;z-index:0;opacity:.25}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:20px}
+.screen{display:none}.screen.on{display:block}
+.card{background:rgba(0,20,6,.85);border:1px solid var(--g);box-shadow:0 0 14px #00ff4144;border-radius:8px;padding:20px;margin:16px 0}
+h1{font-size:2rem;letter-spacing:4px;text-shadow:0 0 10px var(--g);animation:gl 3s infinite}
+@keyframes gl{0%,92%,100%{transform:none}94%{transform:translate(-2px,1px);color:#0ff}96%{transform:translate(2px,-1px);color:#f0f}}
+button{background:transparent;color:var(--g);border:1px solid var(--g);padding:10px 18px;font-family:inherit;cursor:pointer;border-radius:4px;font-size:1rem}
+button:hover:not(:disabled){background:var(--g);color:#000}button:disabled{opacity:.4;cursor:not-allowed}
+.top{display:flex;justify-content:space-between;align-items:center}
+.av{width:42px;height:42px;border-radius:50%;border:2px solid var(--g);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;cursor:pointer;background:var(--d)}
+.menu{display:none;position:absolute;right:0;top:52px;width:320px;max-width:92vw;background:#02140a;border:1px solid var(--g);border-radius:8px;padding:14px;box-shadow:0 0 20px #00ff4166;z-index:9}
+.menu.on{display:block}.menu h3{margin:10px 0 6px;font-size:.95rem}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px dashed var(--d);padding:8px;margin:6px 0;word-break:break-all;font-size:.85rem}
+.row button{padding:4px 10px;font-size:.8rem}.muted{opacity:.6;font-size:.8rem}
+.center{text-align:center}.big{font-size:3rem}.red{color:var(--r);border-color:var(--r)}
+iframe{width:100%;border:0;min-height:90px;background:#000;border-radius:4px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--g);padding:10px 18px;border-radius:4px;display:none;z-index:99}
+</style></head><body>
+<canvas id="rain"></canvas><div id="toast"></div>
+<div class="wrap">
+ <div id="s-load" class="screen on center"><h1>&gt; LOADING_</h1></div>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Share Tech Mono', monospace;
-            user-select: none;
-        }
+ <div id="s-login" class="screen center"><div class="card"><h1>M-H-X</h1><p class="muted" style="margin:10px 0 20px">// ACCESS TERMINAL //</p>
+  <button id="btnLogin">&gt; Google দিয়ে লগ ইন করুন</button></div></div>
 
-        body {
-            background-color: var(--bg-dark);
-            background-image: 
-                linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
+ <div id="s-ban" class="screen center"><div class="card red"><div class="big">⛔</div><h1>ACCESS DENIED</h1>
+  <p style="margin:12px 0">আপনাকে ব্যান করা হয়েছে।</p><p class="muted">Your ID: <span id="banCode"></span></p>
+  <br><button class="red" onclick="doLogout()">Logout</button></div></div>
 
-        .hacker-container {
-            width: 100%;
-            max-width: 460px;
-            background: var(--card-bg);
-            border: 2px solid var(--neon-green);
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 0 25px var(--green-glow), inset 0 0 15px rgba(0, 255, 102, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
+ <div id="s-maint" class="screen center"><div class="card"><div class="big">🛠</div><h1>MAINTENANCE</h1>
+  <p style="margin-top:12px">সাইট এখন মেইনটেনেন্সে আছে। একটু পরে আবার আসুন।</p><br><button onclick="doLogout()">Logout</button></div></div>
 
-        .float-top-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 255, 102, 0.1);
-            border: 1px solid var(--neon-green);
-            color: var(--neon-green);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 8px var(--green-glow);
-            transition: 0.2s;
-            z-index: 100;
-        }
-
-        .float-top-btn:hover {
-            background: var(--neon-green);
-            color: #000;
-        }
-
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed var(--neon-green);
-            padding-bottom: 10px;
-            padding-right: 60px;
-        }
-
-        .terminal-header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green);
-            letter-spacing: 1px;
-        }
-
-        .system-status {
-            font-size: 9px;
-            padding: 3px 6px;
-            border-radius: 4px;
-            background: rgba(0, 255, 102, 0.12);
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
-        }
-
-        .control-panel {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--neon-green);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 12px;
-        }
-
-        .label-title {
-            font-size: 11px;
-            color: var(--neon-green);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            display: block;
-            font-weight: 600;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        input[type="text"], textarea, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--neon-green);
-            background: #000;
-            color: var(--neon-green);
-            outline: none;
-            font-size: 13px;
-            font-family: 'Share Tech Mono', monospace;
-            box-shadow: inset 0 0 8px var(--green-glow);
-        }
-
-        textarea {
-            height: 55px;
-            resize: none;
-            margin-bottom: 8px;
-        }
-
-        .btn-cyber {
-            padding: 10px 14px;
-            border: none;
-            border-radius: 6px;
-            background: var(--neon-green);
-            color: #030712;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 10px var(--green-glow);
-            font-size: 11px;
-        }
-
-        .btn-cyber:hover {
-            background: #fff;
-        }
-
-        .btn-red {
-            background: var(--neon-red);
-            color: #fff;
-            box-shadow: 0 0 10px var(--red-glow);
-        }
-
-        .tts-box {
-            background: rgba(0, 255, 102, 0.03);
-            border: 1px solid var(--neon-green);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .import-section-box {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid var(--neon-green);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .import-grid-wrapper {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-            max-height: 145px;
-            overflow-y: auto;
-        }
-
-        .square-import-btn {
-            aspect-ratio: 1;
-            background: #000;
-            border: 2px dashed var(--neon-green);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            padding: 5px;
-        }
-
-        .square-import-btn:hover {
-            background: rgba(0, 255, 102, 0.15);
-            box-shadow: 0 0 10px var(--green-glow);
-        }
-
-        .square-import-btn span {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .square-import-btn label {
-            cursor: pointer;
-            color: var(--neon-green);
-            font-size: 9px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .square-audio-card {
-            aspect-ratio: 1;
-            background: #050d14;
-            border: 1px solid var(--neon-green);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 6px;
-            cursor: pointer;
-            position: relative;
-            transition: 0.2s;
-        }
-
-        .square-audio-card.active-playing {
-            border-color: var(--neon-red);
-            background: rgba(255, 0, 60, 0.2);
-            color: var(--neon-red);
-            box-shadow: 0 0 15px var(--neon-red);
-        }
-
-        .square-audio-card .card-index {
-            position: absolute;
-            top: 4px;
-            left: 6px;
-            font-size: 9px;
-            color: var(--neon-green);
-            font-weight: bold;
-        }
-
-        .square-audio-card .card-icon {
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-
-        .square-audio-card .card-name {
-            font-size: 9px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            word-break: break-all;
-        }
-
-        .square-audio-card .delete-btn {
-            position: absolute;
-            top: 2px;
-            right: 4px;
-            font-size: 10px;
-            color: var(--neon-red);
-            cursor: pointer;
-        }
-
-        .slider-box {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--neon-green);
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--neon-green);
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-<div class="hacker-container" id="mainContainer">
-    <button class="float-top-btn" onclick="toggleFloatingMode()">📺 FLOAT</button>
-
-    <div class="terminal-header">
-        <h1>M H X VOICE // STUDIO PRO</h1>
-        <div class="system-status">DIRECT ENGINE READY</div>
-    </div>
-
-    <!-- ক্রিস্টাল ক্লিয়ার সাউন্ড বুস্টার কন্ট্রোল -->
-    <div class="control-panel">
-        <div class="slider-box">
-            <div class="slider-header">
-                <span>CRYSTAL VOICE & MUSIC BOOST</span>
-                <span id="boostVal">150%</span>
-            </div>
-            <input type="range" id="gainSlider" min="100" max="250" value="150" oninput="updateAudioGain(this.value)">
-            <small style="font-size: 9px; color: var(--text-muted);">* ন্যাচারাল ও ক্লিয়ার আউটপুটের জন্য অটো-কম্প্রেসর চালু আছে</small>
-        </div>
-    </div>
-
-    <div class="control-panel">
-        <span class="label-title">> SQUAD_SYNC_ROOM_ID</span>
-        <div class="input-row">
-            <input type="text" id="roomCode" value="M-H-X-01">
-            <button class="btn-cyber" onclick="changeRoom()">SYNC</button>
-        </div>
-    </div>
-
-    <div class="import-section-box">
-        <span class="label-title">> AUDIO & MUSIC VAULT (TAP TO PLAY)</span>
-        
-        <div class="import-grid-wrapper" id="audioGridContainer">
-            <div class="square-import-btn" onclick="document.getElementById('audioFileInput').click()">
-                <span>📁</span>
-                <label>IMPORT</label>
-                <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
-            </div>
-        </div>
-    </div>
-
-    <div class="tts-box">
-        <span class="label-title">> NATURAL VOICE GENERATOR</span>
-        
-        <div style="margin-bottom: 8px;">
-            <label style="font-size: 9px; color: var(--neon-green); display:block; margin-bottom:3px;">VOICE PROFILE</label>
-            <select id="voicePersonaSelect">
-                <option value="bn-BD-Female">বাংলা ন্যাচারাল ফিমেল (Clear Female)</option>
-                <option value="bn-BD-Male">বাংলা ন্যাচারাল মেল (Clear Male)</option>
-                <option value="en-US-Female">English US (Natural Girl)</option>
-                <option value="en-US-Male">English US (Natural Guy)</option>
-            </select>
-        </div>
-
-        <textarea id="ttsInput" placeholder="এখানে কথা লিখুন, একদম ক্লিয়ার শোনাবে..."></textarea>
-        
-        <div class="btn-row">
-            <button class="btn-cyber btn-red" style="flex:1;" onclick="saveTextPreset()">SAVE</button>
-            <button class="btn-cyber" style="flex:1;" onclick="speakAndSendText()">PLAY & BROADCAST</button>
-        </div>
-        
-        <div class="saved-presets-container" id="presetsList" style="margin-top: 8px; max-height:65px; overflow-y:auto;"></div>
-    </div>
+ <div id="s-main" class="screen">
+  <div class="top" style="position:relative"><h1>M-H-X</h1>
+   <div class="av" id="av">?</div>
+   <div class="menu" id="menu">
+     <div id="mName" style="font-weight:bold"></div><div class="muted" id="mEmail"></div>
+     <h3>&gt; Your ID</h3><div class="row"><span id="mCode"></span><button id="cpCode">Copy</button></div>
+     <h3>&gt; Your Key</h3><div id="keyList"><p class="muted">কোনো কী নেই</p></div>
+     <br><button onclick="doLogout()" style="width:100%">Logout</button>
+   </div></div>
+  <div class="card center"><p class="muted">// STOCK AVAILABLE: <b id="stock">0</b> //</p>
+   <h2 style="margin:12px 0">&gt; Key পেতে নিচের বাটনে ক্লিক করুন</h2>
+   <p class="muted" style="margin-bottom:14px">শর্টনার সম্পূর্ণ শেষ করে ফিরে আসুন। তাড়াতাড়ি ফিরলে ব্যান হবেন (সর্বনিম্ন <span id="minT">90</span> সেকেন্ড)।</p>
+   <button id="btnGet">[ GENERATE KEY ]</button><p id="noStock" class="red" style="display:none;margin-top:12px;border:0">⚠ স্টক শেষ হয়ে গিয়েছে</p></div>
+  <div class="card" id="adsCard" style="display:none"><p class="muted">// ADS //</p><iframe id="ads" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe></div>
+ </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getDatabase,ref,get,set,update,remove,push,onValue,runTransaction,query,limitToFirst,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-<script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAJWDIhsO4nAnBvpVZ0FP3kIlHFEU2Ysq4",
-      authDomain: "m-h-x-wab-7abdf.firebaseapp.com",
-      databaseURL: "https://m-h-x-wab-7abdf-default-rtdb.firebaseio.com",
-      projectId: "m-h-x-wab-7abdf",
-      storageBucket: "m-h-x-wab-7abdf.firebasestorage.app",
-      messagingSenderId: "570748526283",
-      appId: "1:570748526283:web:a946d0c4d306226a88c54e",
-      measurementId: "G-R56NJRER3Q"
-    };
+const app=initializeApp({apiKey:"AIzaSyCO9HM4YrxxitM3ek3KtbyisiUurIEDVtk",authDomain:"aincard-33f72.firebaseapp.com",databaseURL:"https://aincard-33f72-default-rtdb.firebaseio.com",projectId:"aincard-33f72",storageBucket:"aincard-33f72.firebasestorage.app",messagingSenderId:"809421343715",appId:"1:809421343715:web:1d4c24f370248742ce2ed6"});
+const auth=getAuth(app),db=getDatabase(app);
+const $=id=>document.getElementById(id);
+let me=null,rec=null,S={},offset=0,stock=0,claims={},unsubs=[],busy=false;
+const now=()=>Date.now()+offset;
+const toast=t=>{const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',3500)};
+const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const copy=async t=>{try{await navigator.clipboard.writeText(t);toast('Copied ✔')}catch{toast('Copy failed')}};
+window.doLogout=()=>signOut(auth);
+$('btnLogin').onclick=()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>toast(e.message));
+$('av').onclick=e=>{e.stopPropagation();$('menu').classList.toggle('on')};
+document.addEventListener('click',e=>{if(!$('menu').contains(e.target))$('menu').classList.remove('on')});
+$('cpCode').onclick=()=>copy($('mCode').textContent);
+onValue(ref(db,'.info/serverTimeOffset'),s=>offset=s.val()||0);
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+const genCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';const a=crypto.getRandomValues(new Uint8Array(8));a.forEach(x=>o+=c[x%c.length]);return o};
 
-    // স্টুডিও কোয়ালিটি ক্লিয়ার অডিও ইঞ্জিন (মাইক্রোফোন এক্সেস ছাড়াই)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // ভয়েস ও মিউজিক যাতে ফেটে না যায় এবং একদম ন্যাচারাল শোনায় তার জন্য কম্প্রেসর ও ফিল্টার
-    const compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.setValueAtTime(-18, audioCtx.currentTime);
-    compressor.knee.setValueAtTime(20, audioCtx.currentTime);
-    compressor.ratio.setValueAtTime(6, audioCtx.currentTime);
-    compressor.attack.setValueAtTime(0.003, audioCtx.currentTime);
-    compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+onAuthStateChanged(auth,async u=>{
+  unsubs.forEach(f=>f());unsubs=[];me=u;
+  if(!u){show('s-login');return}
+  show('s-load');
+  try{
+    const uref=ref(db,'users/'+u.uid);let s=await get(uref);
+    if(!s.exists()) await set(uref,{name:u.displayName||'User',email:u.email||'',code:genCode(),createdAt:serverTimestamp()});
+    else await update(uref,{name:u.displayName||'User',email:u.email||''});
+    unsubs.push(onValue(uref,s=>{rec=s.val()||{};render()}));
+    unsubs.push(onValue(ref(db,'settings'),s=>{S=s.val()||{};render()}));
+    unsubs.push(onValue(ref(db,'keyIds'),s=>{stock=s.exists()?Object.keys(s.val()).length:0;render()}));
+    unsubs.push(onValue(ref(db,'claims/'+u.uid),s=>{claims=s.val()||{};renderKeys()}));
+  }catch(e){toast('Error: '+e.message);show('s-login')}
+});
 
-    const vocalClarityFilter = audioCtx.createBiquadFilter();
-    vocalClarityFilter.type = "peaking";
-    vocalClarityFilter.frequency.setValueAtTime(2800, audioCtx.currentTime); // ভোকাল স্পষ্ট করার ফ্রিকোয়েন্সি
-    vocalClarityFilter.Q.setValueAtTime(1.2, audioCtx.currentTime);
-    vocalClarityFilter.gain.setValueAtTime(3.5, audioCtx.currentTime);
+let verified=false;
+function render(){
+  if(!me||!rec||!rec.code)return;
+  $('banCode').textContent=rec.code;
+  if(rec.banned){show('s-ban');return}
+  if(S.maintenance){show('s-maint');return}
+  show('s-main');
+  $('av').textContent=(rec.name||'?').trim().charAt(0).toUpperCase();
+  $('mName').textContent=rec.name;$('mEmail').textContent=rec.email;$('mCode').textContent=rec.code;
+  $('minT').textContent=S.minTime||90;$('stock').textContent=stock;
+  $('noStock').style.display=stock<1?'block':'none';
+  $('btnGet').disabled=stock<1||busy;
+  const ah=S.adsHtml||'';
+  if(ah!==$('ads')._h){$('ads')._h=ah;$('ads').srcdoc=ah;$('adsCard').style.display=ah?'block':'none'}
+  if(!verified&&new URLSearchParams(location.search).has('verify')){verified=true;history.replaceState(null,'',location.pathname);handleVerify()}
+}
 
-    const masterGainNode = audioCtx.createGain();
-    masterGainNode.gain.setValueAtTime(1.5, audioCtx.currentTime); // ডিফল্ট ১৫০% ক্লিয়ার বুস্ট
+function renderKeys(){
+  const t=now(),list=[];
+  Object.entries(claims).forEach(([id,c])=>{if(c.exp<=t)remove(ref(db,`claims/${me.uid}/${id}`));else list.push([id,c])});
+  list.sort((a,b)=>b[1].exp-a[1].exp);
+  $('keyList').innerHTML=list.length?'':'<p class="muted">কোনো কী নেই</p>';
+  list.forEach(([id,c])=>{
+    const d=document.createElement('div');d.className='row';
+    const left=document.createElement('div');left.innerHTML=`<b>${esc(c.value)}</b><div class="muted" data-exp="${c.exp}"></div>`;
+    const b=document.createElement('button');b.textContent='Copy';b.onclick=()=>copy(c.value);
+    d.append(left,b);$('keyList').append(d)});
+  tick();
+}
+function tick(){document.querySelectorAll('[data-exp]').forEach(e=>{let s=Math.max(0,Math.floor((e.dataset.exp-now())/1000));
+  e.textContent=`⏳ ${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} বাকি`})}
+setInterval(()=>{tick();if(me&&Object.values(claims).some(c=>c.exp<=now()))renderKeys()},1000);
 
-    // অডিও চেইন কানেক্ট: Source -> Clarity Filter -> Compressor -> Master Gain -> Speaker
-    vocalClarityFilter.connect(compressor);
-    compressor.connect(masterGainNode);
-    masterGainNode.connect(audioCtx.destination);
+$('btnGet').onclick=async()=>{
+  const sh=Object.values(S.shorteners||{}).filter(x=>x.on&&x.url);
+  if(!sh.length)return toast('এখন কোনো শর্টনার সেট করা নেই');
+  const pick=sh[Math.floor(Math.random()*sh.length)];
+  $('btnGet').disabled=true;
+  await set(ref(db,'sessions/'+me.uid),{start:serverTimestamp(),url:pick.url});
+  location.href=pick.url;
+};
 
-    let currentRoom = "M-H-X-01";
-    let dbRef = db.ref('rooms/' + currentRoom + '/action');
-    let activeAudio = null;
+async function handleVerify(){
+  busy=true;$('btnGet').disabled=true;
+  try{
+    const sref=ref(db,'sessions/'+me.uid),s=await get(sref);
+    if(!s.exists()){toast('কোনো একটিভ সেশন নেই। আগে Generate চাপুন।');return}
+    const el=(now()-s.val().start)/1000,min=Number(S.minTime||90);
+    await remove(sref);
+    if(el<min){await update(ref(db,'users/'+me.uid),{banned:true});return}
+    await claimKey();
+  }catch(e){toast('Error: '+e.message)}finally{busy=false;render()}
+}
 
-    window.onload = function() {
-        loadAudioGrid();
-        loadPresets();
-        // ব্রাউজার ভয়েস লিস্ট প্রিলোড করা
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.getVoices();
-        }
-    };
-
-    function updateAudioGain(val) {
-        document.getElementById('boostVal').innerText = val + "%";
-        const gainValue = val / 100;
-        masterGainNode.gain.setValueAtTime(gainValue, audioCtx.currentTime);
+async function claimKey(){
+  const s=await get(query(ref(db,'keyIds'),limitToFirst(15)));
+  if(!s.exists())return toast('স্টক শেষ হয়ে গিয়েছে');
+  const ids=Object.keys(s.val()).sort(()=>Math.random()-.5);
+  for(const id of ids){
+    const kref=ref(db,'keys/'+id);await get(kref);let val=null;
+    const tr=await runTransaction(kref,c=>{if(c===null)return;val=c;return null});
+    if(tr.committed&&val){
+      await remove(ref(db,'keyIds/'+id));
+      await push(ref(db,'claims/'+me.uid),{value:val.value,exp:now()+864e5});
+      toast('🔑 Key পেয়েছেন! প্রোফাইল > Your Key');$('menu').classList.add('on');return;
     }
+  }
+  toast('স্টক শেষ হয়ে গিয়েছে');
+}
 
-    async function toggleFloatingMode() {
-        try {
-            if (document.pictureInPictureElement) {
-                await document.exitPictureInPicture();
-            } else {
-                const canvas = document.createElement('canvas');
-                canvas.width = 400; canvas.height = 600;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = "#030712";
-                ctx.fillRect(0, 0, 400, 600);
-                ctx.fillStyle = "#00ff66";
-                ctx.font = "20px Orbitron";
-                ctx.fillText("M H X DIRECT AUDIO", 20, 50);
-
-                const video = document.createElement('video');
-                video.srcObject = canvas.captureStream();
-                video.autoplay = true;
-                await video.requestPictureInPicture();
-            }
-        } catch (err) {
-            alert("Floating mode is not supported on this browser.");
-        }
-    }
-
-    function changeRoom() {
-        const code = document.getElementById('roomCode').value.trim();
-        if (!code) return;
-        currentRoom = code;
-        dbRef.off();
-        dbRef = db.ref('rooms/' + currentRoom + '/action');
-        listenToFirebase();
-        alert("Squad Sync Room Connected: " + currentRoom);
-    }
-
-    function importAudioFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
-            audioList.push({
-                name: file.name,
-                data: e.target.result
-            });
-            localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
-            loadAudioGrid();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function loadAudioGrid() {
-        const container = document.getElementById('audioGridContainer');
-        container.innerHTML = `
-            <div class="square-import-btn" onclick="document.getElementById('audioFileInput').click()">
-                <span>📁</span>
-                <label>IMPORT</label>
-                <input type="file" id="audioFileInput" accept="audio/*" style="display:none" onchange="importAudioFile(event)">
-            </div>
-        `;
-
-        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
-
-        audioList.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'square-audio-card';
-
-            card.innerHTML = `
-                <span class="card-index">#${index + 1}</span>
-                <span class="delete-btn" onclick="deleteAudioItem(event, ${index})">×</span>
-                <span class="card-icon">🎵</span>
-                <span class="card-name">${item.name}</span>
-            `;
-
-            card.onclick = (e) => {
-                if (e.target.classList.contains('delete-btn')) return;
-                togglePlayAudio(item.data, card);
-            };
-
-            container.appendChild(card);
-        });
-    }
-
-    function deleteAudioItem(event, index) {
-        event.stopPropagation();
-        let audioList = JSON.parse(localStorage.getItem('mhx_audio_list') || '[]');
-        audioList.splice(index, 1);
-        localStorage.setItem('mhx_audio_list', JSON.stringify(audioList));
-        loadAudioGrid();
-    }
-
-    function togglePlayAudio(dataUrl, cardElement) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        // চলমান অডিও থামানো
-        if (activeAudio && activeAudio.dataset.src === dataUrl) {
-            activeAudio.pause();
-            activeAudio = null;
-            cardElement.classList.remove('active-playing');
-            return;
-        }
-
-        if (activeAudio) {
-            activeAudio.pause();
-            activeAudio = null;
-            document.querySelectorAll('.square-audio-card').forEach(el => el.classList.remove('active-playing'));
-        }
-
-        const audio = new Audio(dataUrl);
-        audio.dataset.src = dataUrl;
-        audio.crossOrigin = "anonymous";
-        activeAudio = audio;
-        cardElement.classList.add('active-playing');
-
-        try {
-            // স্টুডিও ক্লিয়ার ফিল্টার ও কম্প্রেসরের মাধ্যমে সরাসরি প্লেব্যাক
-            const sourceNode = audioCtx.createMediaElementSource(audio);
-            sourceNode.connect(vocalClarityFilter);
-        } catch (e) {
-            console.log("Audio routing fallback:", e);
-        }
-
-        audio.play().catch(err => console.log(err));
-
-        audio.onended = () => {
-            cardElement.classList.remove('active-playing');
-            activeAudio = null;
-        };
-    }
-
-    function speakAndSendText() {
-        const text = document.getElementById('ttsInput').value.trim();
-        const persona = document.getElementById('voicePersonaSelect').value;
-        if (!text) return;
-
-        playCustomTTSVoice(text, persona);
-
-        // ফায়ারবেস রুমে যুক্ত থাকা টিমমেটদের কাছেও পাঠানো
-        dbRef.set({ sound: 'tts', text: text, persona: persona, timestamp: Date.now() });
-    }
-
-    function playCustomTTSVoice(text, persona) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        window.speechSynthesis.cancel(); // আগের কোনো কথা আটকে থাকলে ক্লিয়ার করবে
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        const voices = window.speechSynthesis.getVoices();
-        
-        // ন্যাচারাল টোন সেট করা (অতিরিক্ত পিচ কমিয়ে বা বাড়িয়ে রোবটিক না করা)
-        if (persona === 'bn-BD-Female') {
-            utterance.lang = 'bn-BD';
-            const bnVoice = voices.find(v => v.lang.includes('bn'));
-            if (bnVoice) utterance.voice = bnVoice;
-            utterance.pitch = 1.05;
-            utterance.rate = 0.98;
-        } else if (persona === 'bn-BD-Male') {
-            utterance.lang = 'bn-BD';
-            const bnVoice = voices.find(v => v.lang.includes('bn'));
-            if (bnVoice) utterance.voice = bnVoice;
-            utterance.pitch = 0.88;
-            utterance.rate = 0.96;
-        } else if (persona === 'en-US-Female') {
-            utterance.lang = 'en-US';
-            const enVoice = voices.find(v => v.lang.includes('en-US') && v.name.includes('Female')) || voices.find(v => v.lang.includes('en'));
-            if (enVoice) utterance.voice = enVoice;
-            utterance.pitch = 1.05;
-            utterance.rate = 1.0;
-        } else {
-            utterance.lang = 'en-US';
-            const enVoice = voices.find(v => v.lang.includes('en-US') && v.name.includes('Male')) || voices.find(v => v.lang.includes('en'));
-            if (enVoice) utterance.voice = enVoice;
-            utterance.pitch = 0.9;
-            utterance.rate = 0.98;
-        }
-
-        utterance.volume = 1.0; // সর্বোচ্চ স্পষ্ট ভলিউম
-        window.speechSynthesis.speak(utterance);
-    }
-
-    function saveTextPreset() {
-        const text = document.getElementById('ttsInput').value.trim();
-        if (!text) return;
-        let presets = JSON.parse(localStorage.getItem('mhx_presets') || '[]');
-        presets.push(text);
-        localStorage.setItem('mhx_presets', JSON.stringify(presets));
-        loadPresets();
-    }
-
-    function loadPresets() {
-        const container = document.getElementById('presetsList');
-        container.innerHTML = '';
-        let presets = JSON.parse(localStorage.getItem('mhx_presets') || '[]');
-        presets.forEach((item) => {
-            const chip = document.createElement('div');
-            chip.style.cssText = "background:rgba(0,255,102,0.08); border:1px dashed var(--neon-green); color:var(--neon-green); padding:4px 6px; border-radius:4px; font-size:9px; margin-bottom:3px; cursor:pointer;";
-            chip.innerText = "> " + item;
-            chip.onclick = () => {
-                document.getElementById('ttsInput').value = item;
-                speakAndSendText();
-            };
-            container.appendChild(chip);
-        });
-    }
-
-    function listenToFirebase() {
-        dbRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data && Date.now() - data.timestamp < 3000) {
-                if (data.sound === 'tts' && data.text) {
-                    playCustomTTSVoice(data.text, data.persona || 'bn-BD-Female');
-                }
-            }
-        });
-    }
-
-    listenToFirebase();
-</script>
-
-</body>
-</html>
+// matrix rain
+const cv=$('rain'),cx=cv.getContext('2d');let cols,drops;
+function rs(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.floor(cv.width/16);drops=Array(cols).fill(1)}rs();addEventListener('resize',rs);
+setInterval(()=>{cx.fillStyle='rgba(2,10,4,.08)';cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle='#00ff41';cx.font='15px monospace';
+ drops.forEach((y,i)=>{cx.fillText(Math.random()<.5?'0':'1',i*16,y*16);if(y*16>cv.height&&Math.random()>.975)drops[i]=0;drops[i]++})},50);
+</script></body></html>
